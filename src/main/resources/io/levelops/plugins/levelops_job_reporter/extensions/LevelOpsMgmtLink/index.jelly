@@ -1,0 +1,70 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <l:layout permission="${app.ADMINISTER}" norefresh="true">
+        <st:include it="${app}" page="sidepanel.jelly"/>
+        <l:main-panel>
+            <h1>
+                <img src="${imagesURL}/48x48/${it.iconFileName}" alt=""/>
+                ${it.displayName} Configuration
+            </h1>
+
+            <f:form method="post" action="saveSettings">
+                <f:section title="LevelOps">
+                    <f:entry title="Jenkins Instance Name" field="jenkinsInstanceName"
+                        help="/plugin/${it.urlName}/help/help-jenkinsInstanceName.html">
+                        <f:textbox value="${it.configuration.jenkinsInstanceName}" name="jenkinsInstanceName"
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsInstanceName?value='+escape(this.value)"/>
+                    </f:entry>
+
+                    <f:entry title="LevelOps API Key" description="LevelOps API Key" field="levelOpsApiKey"
+                        help="/plugin/${it.urlName}/help/help-levelOpsApiKey.html">
+                        <f:password value="${it.configuration.levelOpsApiKey}" name="levelOpsApiKey"
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsApiKey?value='+escape(this.value)"/>
+                    </f:entry>
+                    <f:entry title="LevelOps Status" field="levelOpsStatus"
+                        help="/plugin/${it.urlName}/help/help-jenkinsStatus.html">
+                        <f:readOnlyTextbox value="${it.jenkinsStatus}" name="levelOpsStatus"
+                       checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsStatus?value='+escape(this.value)"/>
+                    </f:entry>
+                </f:section>
+
+                <f:section title="Monitoring settings">
+                    <f:entry title="LevelOps Plugins directory" field="levelOpsPluginPath"
+                        help="/plugin/${it.urlName}/help/help-levelOpsPluginPath.html">
+                        <f:textbox value="${it.configuration.levelOpsPluginPath}" name="levelOpsPluginPath"
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsPluginPath?value='+escape(this.value)"/>
+                    </f:entry>
+
+                    <f:entry title="Jenkins Base Url" field="jenkinsBaseUrl"
+                        help="/plugin/${it.urlName}/help/help-jenkinsBaseUrl.html">
+                        <f:textbox value="${it.configuration.jenkinsBaseUrl}" name="jenkinsBaseUrl"
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsBaseUrl?value='+escape(this.value)"/>
+                    </f:entry>
+                    <f:entry title="Jenkins User Name" field="jenkinsUserName"
+                        help="/plugin/${it.urlName}/help/help-jenkinsUserName.html">
+                        <f:textbox value="${it.configuration.jenkinsUserName}" name="jenkinsUserName"
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsUserName?value='+escape(this.value)"/>
+                    </f:entry>
+                    <f:entry title="Jenkins User Token" description="Jenkins User Token" field="jenkinsUserToken"
+                        help="/plugin/${it.urlName}/help/help-jenkinsUserToken.html">
+                        <f:password value="${it.configuration.jenkinsUserToken}" name="jenkinsUserToken"
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsUserToken?value='+escape(this.value)"/>
+                    </f:entry>
+
+                    <f:optionalBlock title="Trust All Certificates"
+                                            help="/plugin/${it.urlName}/help/help-trustAllCertificates.html"
+                                            checked="${it.configuration.trustAllCertificates}"
+                                            name="trustAllCertificates" />
+                </f:section>
+
+                <f:section>
+  		              <f:entry>
+    		                <f:submit value="Save"/>
+  		              </f:entry>
+                </f:section>
+            </f:form>
+
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
