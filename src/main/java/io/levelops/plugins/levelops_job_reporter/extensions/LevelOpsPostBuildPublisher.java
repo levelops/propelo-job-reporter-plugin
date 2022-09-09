@@ -51,8 +51,12 @@ public class LevelOpsPostBuildPublisher extends Recorder implements SimpleBuildS
         levelOpsCodeCoverageZip = levelOpsCodeCoverageDir + ".zip";
     }
 
-    private String getCodeCoverageDir(String projectName) {
-        return LEVELOPS_CODE_COVERAGE_DIR_PREFIX + projectName + LEVELOPS_CODE_COVERAGE_DIR_SUFFIX;
+    private String getCodeCoverageDir(final String projectName) {
+        return LEVELOPS_CODE_COVERAGE_DIR_PREFIX + sanatizeFileName(projectName) + LEVELOPS_CODE_COVERAGE_DIR_SUFFIX;
+    }
+
+    public static String sanatizeFileName(final String projectName) {
+        return projectName.replaceAll("[^A-Za-z0-9]", "_").replaceAll("__+", "_");
     }
 
     @Override
