@@ -74,7 +74,7 @@ public class JenkinsHeartbeatAperiodicWork extends AperiodicWork {
     @NotNull
     public HeartbeatResponse sendHeartbeat(String hbRequestPayload, GenericRequestService genericRequestService,
                                            LevelOpsPluginImpl plugin, final ProxyConfigService.ProxyConfig proxyConfig) throws IOException {
-        GenericResponse genericResponse = genericRequestService.performGenericRequest(plugin.getLevelOpsApiKey(),
+        GenericResponse genericResponse = genericRequestService.performGenericRequest(plugin.getLevelOpsApiKey().getPlainText(),
                 "JenkinsHeartbeat", hbRequestPayload, plugin.isTrustAllCertificates(), null, proxyConfig);
         HeartbeatResponse heartbeatResponse = mapper.readValue(genericResponse.getPayload(),
                 mapper.getTypeFactory().constructType(HeartbeatResponse.class));

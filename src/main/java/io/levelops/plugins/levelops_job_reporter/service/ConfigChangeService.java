@@ -76,7 +76,7 @@ public class ConfigChangeService {
         JobConfigChangeNotificationService jobConfigChangeNotificationService = new JobConfigChangeNotificationService(LevelOpsPluginConfigService.getInstance().getLevelopsConfig().getApiUrl(),mapper);
         List<String> runIds = null;
         try {
-            runIds = jobConfigChangeNotificationService.submitJobConfigChangeRequest( plugin.getLevelOpsApiKey(),
+            runIds = jobConfigChangeNotificationService.submitJobConfigChangeRequest(plugin.getLevelOpsApiKey().getPlainText(),
                     jobConfigChange, scmUrl, scmUserId, jenkinsInstanceGuid, jenkinsInstanceName, jenkinsInstanceUrl, plugin.isTrustAllCertificates(), proxyConfig);
             LOGGER.log(Level.FINE, "Successfully submitted job config change event to LevelOps, jobFullName = {0}, configChangeType = {1}, runIds = {2}", new Object[] {jobConfigChange.getJobNameDetails().getJobFullName(), jobConfigChange.getChangeType(), runIds});
         } catch (IOException e) {

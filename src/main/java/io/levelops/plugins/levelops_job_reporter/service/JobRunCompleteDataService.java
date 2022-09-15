@@ -90,7 +90,7 @@ public class JobRunCompleteDataService {
             return null;
         }
 
-        BlueOceanRestClient restClient = new BlueOceanRestClient(plugin.getJenkinsBaseUrl(), plugin.getJenkinsUserName(), plugin.getJenkinsUserToken(), plugin.isTrustAllCertificates(), mapper, proxyConfig);
+        BlueOceanRestClient restClient = new BlueOceanRestClient(plugin.getJenkinsBaseUrl(), plugin.getJenkinsUserName(), plugin.getJenkinsUserToken().getPlainText(), plugin.isTrustAllCertificates(), mapper, proxyConfig);
 
         //Get Org
         String orgName = getOrganizationName(restClient);

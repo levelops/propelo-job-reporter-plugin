@@ -44,7 +44,7 @@ public class JobConfigStateChangeListener extends ItemListener {
                 LOGGER.log(Level.SEVERE, "Propelo Plugin Directory is invalid, cannot process config create! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
-            if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
+            if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
                 LOGGER.log(Level.FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
@@ -75,7 +75,7 @@ public class JobConfigStateChangeListener extends ItemListener {
                 LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config location change! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
-            if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
+            if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
                 LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
                 return;
             }
@@ -115,7 +115,7 @@ public class JobConfigStateChangeListener extends ItemListener {
                 LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config rename! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
-            if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
+            if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
                 LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
                 return;
             }
@@ -149,7 +149,7 @@ public class JobConfigStateChangeListener extends ItemListener {
                 LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config delete! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
-            if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
+            if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
                 LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
                 return;
             }

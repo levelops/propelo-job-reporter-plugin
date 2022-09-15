@@ -3,6 +3,7 @@ package io.levelops.plugins.levelops_job_reporter.extensions;
 import hudson.Extension;
 import hudson.model.Hudson;
 import hudson.model.ManagementLink;
+import hudson.util.Secret;
 import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -60,11 +61,11 @@ public class LevelOpsMgmtLink extends ManagementLink {
         Hudson.getInstance().checkPermission(Hudson.ADMINISTER);
 
         final LevelOpsPluginImpl plugin = LevelOpsPluginImpl.getInstance();
-        plugin.setLevelOpsApiKey(levelOpsApiKey);
+        plugin.setLevelOpsApiKey(Secret.fromString(levelOpsApiKey));
         plugin.setLevelOpsPluginPath(levelOpsPluginPath);
         plugin.setJenkinsBaseUrl(jenkinsBaseUrl);
         plugin.setJenkinsUserName(jenkinsUserName);
-        plugin.setJenkinsUserToken(jenkinsUserToken);
+        plugin.setJenkinsUserToken(Secret.fromString(jenkinsUserToken));
         plugin.setBullseyeXmlResultPath(bullseyeXmlResultPaths);
         plugin.setProductIds(productIds);
         plugin.setJenkinsInstanceName(jenkinsInstanceName);

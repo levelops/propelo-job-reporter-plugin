@@ -4,6 +4,7 @@ import antlr.ANTLRException;
 import hudson.Plugin;
 import hudson.scheduler.CronTab;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import io.levelops.plugins.commons.models.JenkinsStatusInfo;
 import io.levelops.plugins.commons.models.PluginVersion;
 import io.levelops.plugins.commons.models.blue_ocean.Organization;
@@ -41,7 +42,7 @@ import static io.levelops.plugins.commons.plugins.Common.REPORTS_DIR_NAME;
 public class LevelOpsPluginImpl extends Plugin {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
     private static final String DATA_DIR_NAME = "run-complete-data";
-    private String levelOpsApiKey = "";
+    private Secret levelOpsApiKey = Secret.fromString("");
     private String levelOpsPluginPath = "${JENKINS_HOME}/levelops-jenkin";
     private boolean trustAllCertificates = false;
     private String productIds = "";
@@ -50,7 +51,7 @@ public class LevelOpsPluginImpl extends Plugin {
     private String jenkinsStatus = "";
     private String jenkinsBaseUrl = "http://localhost:8080";
     private String jenkinsUserName = "";
-    private String jenkinsUserToken = "";
+    private Secret jenkinsUserToken = Secret.fromString("");
     private long heartbeatDuration = 60;
     private String bullseyeXmlResultPaths = "";
     private long configUpdatedAt = System.currentTimeMillis();
@@ -80,11 +81,11 @@ public class LevelOpsPluginImpl extends Plugin {
         return (jenkins == null) ? null : jenkins.getRootDir();
     }
 
-    public String getLevelOpsApiKey() {
+    public Secret getLevelOpsApiKey() {
         return levelOpsApiKey;
     }
 
-    public void setLevelOpsApiKey(String levelOpsApiKey) {
+    public void setLevelOpsApiKey(Secret levelOpsApiKey) {
         this.levelOpsApiKey = levelOpsApiKey;
     }
 
@@ -221,11 +222,11 @@ public class LevelOpsPluginImpl extends Plugin {
         this.jenkinsUserName = jenkinsUserName;
     }
 
-    public String getJenkinsUserToken() {
+    public Secret getJenkinsUserToken() {
         return jenkinsUserToken;
     }
 
-    public void setJenkinsUserToken(String jenkinsUserToken) {
+    public void setJenkinsUserToken(Secret jenkinsUserToken) {
         this.jenkinsUserToken = jenkinsUserToken;
     }
 
@@ -277,13 +278,13 @@ public class LevelOpsPluginImpl extends Plugin {
 
     @POST
     public FormValidation doCheckLevelOpsApiKey(final StaplerRequest res, final StaplerResponse rsp,
-                                                @QueryParameter("value") final String levelOpsApiKey) {
+                                                @QueryParameter("value") final Secret levelOpsApiKey) {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         JenkinsInstanceGuidService jenkinsInstanceGuidService = new JenkinsInstanceGuidService(
                 instance.getExpandedLevelOpsPluginDir(),
                 instance.getDataDirectory(), instance.getDataDirectoryWithVersion());
         ProxyConfigService.ProxyConfig proxyConfig = ProxyConfigService.generateConfigFromJenkinsProxyConfiguration(Jenkins.getInstanceOrNull());
-        return LevelOpsPluginConfigValidator.performApiKeyValidation(levelOpsApiKey, trustAllCertificates,
+        return LevelOpsPluginConfigValidator.performApiKeyValidation(levelOpsApiKey.getPlainText(), trustAllCertificates,
                 jenkinsInstanceGuidService.createOrReturnInstanceGuid(), instance.getJenkinsInstanceName(), instance.getPluginVersionString(), proxyConfig);
     }
 
@@ -385,7 +386,7 @@ public class LevelOpsPluginImpl extends Plugin {
         if(StringUtils.isBlank(jenkinsBaseUrl)) {
             return FormValidation.error("Jenkins Base Url cannot be null or empty!");
         } else {
-            return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken, true, false, false);
+            return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken.getPlainText(), true, false, false);
         }
     }
     public FormValidation doCheckJenkinsUserName(final StaplerRequest res, final StaplerResponse rsp,
@@ -393,13 +394,13 @@ public class LevelOpsPluginImpl extends Plugin {
         if(StringUtils.isBlank(jenkinsUserName)) {
             return FormValidation.error("Jenkins User Name cannot be null or empty!");
         } else {
-            return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken, false, true, false);
+            return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken.getPlainText(), false, true, false);
         }
     }
     public FormValidation doCheckJenkinsUserToken(final StaplerRequest res, final StaplerResponse rsp,
-                                                  @QueryParameter("value") final String jenkinsUserToken) {
+                                                  @QueryParameter("value") final Secret jenkinsUserToken) {
         LOGGER.log(Level.FINEST, "jenkinsUserToken = {0}", jenkinsUserToken);
-        if(StringUtils.isBlank(jenkinsUserToken)) {
+        if(jenkinsUserToken != null && StringUtils.isBlank(jenkinsUserToken.getPlainText())) {
             return FormValidation.error("Jenkins User Token cannot be null or empty!");
         } else {
             //return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken, false, false, true);

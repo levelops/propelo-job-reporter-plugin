@@ -119,11 +119,11 @@ public class LevelOpsRunListener extends RunListener<Run> {
     public void onFinalized(Run run) {
         try {
             LOGGER.finer("LevelOpsRunListener.onCompleted");
-            if (plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
+            if (plugin.getLevelOpsApiKey() != null && plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
                 LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process job run completed event! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
-            if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
+            if (StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
                 LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
                 return;
             }
@@ -188,7 +188,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
         try {
             String jobFullName = (jobRunDetail != null) ? jobRunDetail.getJobFullName() : null;
             long jobRunNumber = (jobRunDetail != null) ? jobRunDetail.getBuildNumber() : 0;
-            runIds = jobRunCompleteNotificationService.submitJobRunCompleteRequest(plugin.getLevelOpsApiKey(), jobRunDetail,
+            runIds = jobRunCompleteNotificationService.submitJobRunCompleteRequest(plugin.getLevelOpsApiKey().getPlainText(), jobRunDetail,
                     scmUrl, scmUserId, jenkinsInstanceGuid, jenkinsInstanceName, jenkinsInstanceUrl, plugin.isTrustAllCertificates(), jobRunCompleteData,
                     scmCommitIds, failedLogFileUUID, proxyConfig);
             LOGGER.log(Level.FINE, "Successfully submitted job run complete event to LevelOps, jobFullName = {0}, jobRunNumber = {1}, runIds = {2}", new Object[]{jobFullName, jobRunNumber, runIds});

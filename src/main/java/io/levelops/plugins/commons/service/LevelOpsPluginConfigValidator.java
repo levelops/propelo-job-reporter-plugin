@@ -3,6 +3,7 @@ package io.levelops.plugins.commons.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import io.levelops.plugins.commons.models.HeartbeatRequest;
 import io.levelops.plugins.commons.models.jenkins.saas.GenericResponse;
 import io.levelops.plugins.commons.utils.JsonUtils;
@@ -25,16 +26,16 @@ public class LevelOpsPluginConfigValidator {
         return false;
     }
 
-    public static FormValidation performApiKeyValidation(String levelOpsApiKey, boolean trustAllCertificates,
+    public static FormValidation performApiKeyValidation(Secret levelOpsApiKey, boolean trustAllCertificates,
                                                          String jenkinsInstanceGuid, String instanceName,
                                                          String pluginVersionString, final ProxyConfigService.ProxyConfig proxyConfig) {
-        LOGGER.log(Level.FINEST, "propeloApiKey = {0}", levelOpsApiKey);
-
-        if ((levelOpsApiKey == null) || (levelOpsApiKey.length() == 0)) {
+        if ((levelOpsApiKey == null) || (levelOpsApiKey.getPlainText().length() == 0)) {
             return FormValidation.error("Propelo Api Key should not be null or empty.");
         }
+        String levelOpsApiKeyStr = levelOpsApiKey.getPlainText();
+        LOGGER.log(Level.FINEST, "propeloApiKey = {0}", levelOpsApiKeyStr);
         //The levelopsApiKey we received was encrypted, cannot check
-        if (isLevelOpsApiKeyEncrypted(levelOpsApiKey)) {
+        if (isLevelOpsApiKeyEncrypted(levelOpsApiKeyStr)) {
             return FormValidation.ok();
         }
         String levelOpsApiUrl = LevelOpsPluginConfigService.getInstance().getLevelopsConfig().getApiUrl();
@@ -43,7 +44,7 @@ public class LevelOpsPluginConfigValidator {
         try {
             hbRequestPayload = mapper.writeValueAsString(createHeartBeatRequest(System.currentTimeMillis(),
                     jenkinsInstanceGuid, levelOpsApiUrl, instanceName, pluginVersionString));
-            GenericResponse genericResponse = genericRequestService.performGenericRequest(levelOpsApiKey,
+            GenericResponse genericResponse = genericRequestService.performGenericRequest(levelOpsApiKeyStr,
                     "JenkinsHeartbeat", hbRequestPayload, trustAllCertificates, null, proxyConfig);
             return FormValidation.ok();
         } catch (JsonProcessingException e) {

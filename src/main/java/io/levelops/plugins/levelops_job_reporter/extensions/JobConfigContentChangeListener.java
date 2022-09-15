@@ -45,7 +45,7 @@ public class JobConfigContentChangeListener extends SaveableListener {
                 LOGGER.log(SEVERE, "Propelo Plugin Directory is invalid, cannot process config change! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
-            if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
+            if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
                 LOGGER.log(FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
