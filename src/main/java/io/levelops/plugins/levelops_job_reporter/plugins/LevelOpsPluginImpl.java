@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.verb.POST;
 
 import javax.net.ssl.SSLException;
 import java.io.File;
@@ -377,8 +378,10 @@ public class LevelOpsPluginImpl extends Plugin {
         return FormValidation.ok();
     }
 
+    @POST
     public FormValidation doCheckJenkinsBaseUrl(final StaplerRequest res, final StaplerResponse rsp,
                                                 @QueryParameter("value") final String jenkinsBaseUrl) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         if(StringUtils.isBlank(jenkinsBaseUrl)) {
             return FormValidation.error("Jenkins Base Url cannot be null or empty!");
         } else {
@@ -413,8 +416,10 @@ public class LevelOpsPluginImpl extends Plugin {
         }
     }
 
+    @POST
     public FormValidation doCheckLevelOpsPluginPath(final StaplerRequest res, final StaplerResponse rsp,
                                                     @QueryParameter("value") final String path) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         if ((path == null) || path.trim().isEmpty()) {
             return FormValidation.error("Reports path must not be empty.");
         }

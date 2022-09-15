@@ -23,5 +23,4 @@ public class LevelOpsPostBuildPublisherTest {
             LevelOpsPostBuildPublisher.sanatizeFileName(projectName).equals("_Test");
         }
     }
-    
 }

@@ -7,6 +7,7 @@ import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.verb.POST;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -40,6 +41,7 @@ public class LevelOpsMgmtLink extends ManagementLink {
         return PLUGIN_DESCRIPTION;
     }
 
+    @POST
     public void doSaveSettings(final StaplerRequest res, final StaplerResponse rsp,
                                @QueryParameter("levelOpsApiKey") final String levelOpsApiKey,
                                @QueryParameter("levelOpsPluginPath") final String levelOpsPluginPath,
