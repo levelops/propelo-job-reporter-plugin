@@ -275,10 +275,10 @@ public class LevelOpsPluginImpl extends Plugin {
         this.jenkinsInstanceName = jenkinsInstanceName;
     }
 
-
-
+    @POST
     public FormValidation doCheckLevelOpsApiKey(final StaplerRequest res, final StaplerResponse rsp,
                                                 @QueryParameter("value") final String levelOpsApiKey) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         JenkinsInstanceGuidService jenkinsInstanceGuidService = new JenkinsInstanceGuidService(
                 instance.getExpandedLevelOpsPluginDir(),
                 instance.getDataDirectory(), instance.getDataDirectoryWithVersion());
