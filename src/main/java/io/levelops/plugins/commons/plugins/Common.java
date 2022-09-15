@@ -3,8 +3,8 @@ package io.levelops.plugins.commons.plugins;
 import java.nio.charset.Charset;
 
 public class Common {
-    public static final String API_URL_PROD = "https://api.levelops.io";
-    public static final String API_URL_DEV = "https://testapi1.levelops.io";
+    public static final String API_URL_PROD = "https://api.propelo.ai";
+    public static final String API_URL_DEV = "https://testapi1.propelo.ai";
     public static final String API_URL_LOCAL = "http://localhost:8080";
     public static final String API_URL_EFFECTIVE = API_URL_PROD;
 

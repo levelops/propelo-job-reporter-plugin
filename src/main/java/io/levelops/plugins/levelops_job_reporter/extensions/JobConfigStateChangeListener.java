@@ -41,11 +41,11 @@ public class JobConfigStateChangeListener extends ItemListener {
             }
             LOGGER.fine("JobConfigStateChangeListener.onCreated started");
             if (plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
-                LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config create! path: " + plugin.getLevelOpsPluginPath());
+                LOGGER.log(Level.SEVERE, "Propelo Plugin Directory is invalid, cannot process config create! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
             if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
-                LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
+                LOGGER.log(Level.FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
             AbstractItem abstractItem = (AbstractItem) item;

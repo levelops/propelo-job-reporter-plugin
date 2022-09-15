@@ -17,9 +17,9 @@ import java.util.logging.Logger;
 @Extension
 public class LevelOpsMgmtLink extends ManagementLink {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
-    public static final String PLUGIN_NAME = "levelops-job-reporter";
-    public static final String PLUGIN_DISPLAY_NAME = "LevelOps Job Reporter";
-    public static final String PLUGIN_DESCRIPTION = "Reports back to LevelOps after each Job Run with metadata and unsuccessful job logs.";
+    public static final String PLUGIN_NAME = "propelo-job-reporter";
+    public static final String PLUGIN_DISPLAY_NAME = "Propelo Job Reporter";
+    public static final String PLUGIN_DESCRIPTION = "Reports back to Propelo after each Job Run with metadata and unsuccessful job logs.";
 
     @Override
     public String getDisplayName() {

@@ -63,7 +63,7 @@ public class LevelOpsPostBuildPublisher extends Recorder implements SimpleBuildS
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace,
                         @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
-        LOGGER.log(Level.INFO, "Levelops post build publisher called for code coverage plugin");
+        LOGGER.log(Level.INFO, "Propelo post build publisher called for code coverage plugin");
         final List<Byte> serializedZipFile = workspace.act(new ArchiveJobRunResultFiles(coverageReportPath));
         final File codeCoverageResults = new File(run.getRootDir(), levelOpsCodeCoverageZip);
         LOGGER.log(Level.INFO, "codeCoverageResults = {0}", codeCoverageResults);
@@ -90,7 +90,7 @@ public class LevelOpsPostBuildPublisher extends Recorder implements SimpleBuildS
         @Nonnull
         @Override
         public String getDisplayName() {
-            return "Levelops code coverage plugin";
+            return "Propelo Job Reporter Plugin";
         }
     }
 }

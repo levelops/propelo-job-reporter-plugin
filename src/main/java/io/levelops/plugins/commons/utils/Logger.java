@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Logger {
 
-    private static final String LOG_FORMAT = "[LevelOps Publisher] %s - %s"; // <LEVEL> <Message>
+    private static final String LOG_FORMAT = "[Propelo Publisher] %s - %s"; // <LEVEL> <Message>
 
     private static void log(PrintStream out, String level, String message) {
         out.println(String.format(LOG_FORMAT, level, Objects.toString(message)));

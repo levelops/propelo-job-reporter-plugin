@@ -28,10 +28,10 @@ public class LevelOpsPluginConfigValidator {
     public static FormValidation performApiKeyValidation(String levelOpsApiKey, boolean trustAllCertificates,
                                                          String jenkinsInstanceGuid, String instanceName,
                                                          String pluginVersionString, final ProxyConfigService.ProxyConfig proxyConfig) {
-        LOGGER.log(Level.FINEST, "levelOpsApiKey = {0}", levelOpsApiKey);
+        LOGGER.log(Level.FINEST, "propeloApiKey = {0}", levelOpsApiKey);
 
         if ((levelOpsApiKey == null) || (levelOpsApiKey.length() == 0)) {
-            return FormValidation.error("LevelOps Api Key should not be null or empty.");
+            return FormValidation.error("Propelo Api Key should not be null or empty.");
         }
         //The levelopsApiKey we received was encrypted, cannot check
         if (isLevelOpsApiKeyEncrypted(levelOpsApiKey)) {
@@ -50,16 +50,16 @@ public class LevelOpsPluginConfigValidator {
             LOGGER.log(Level.SEVERE, "JsonProcessingException!!", e);
             String msg = e.getMessage();
             if (msg.startsWith("Response not successful: 401")) {
-                return FormValidation.error("LevelOps api key is not valid.");
+                return FormValidation.error("Propelo api key is not valid.");
             }
             return FormValidation.error("Validation failed! Error " + msg);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "IOException!!", e);
             String msg = e.getMessage();
             if (msg.startsWith("Response not successful: 401")) {
-                return FormValidation.error("LevelOps api key is not valid.");
+                return FormValidation.error("Propelo api key is not valid.");
             } else if (msg.startsWith("Response not successful: 403")) {
-                return FormValidation.error("SSL Exception connecting to jenkins api. Please check with LevelOps Support! : " + levelOpsApiUrl);
+                return FormValidation.error("SSL Exception connecting to jenkins api. Please check with Propelo Support! : " + levelOpsApiUrl);
             } else {
                 return FormValidation.error("Validation failed! Error " + msg);
             }

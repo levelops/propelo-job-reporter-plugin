@@ -17,12 +17,12 @@
                             checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsInstanceName?value='+escape(this.value)"/>
                     </f:entry>
 
-                    <f:entry title="LevelOps API Key" description="LevelOps API Key" field="levelOpsApiKey"
+                    <f:entry title="Propelo API Key" description="Propelo API Key Obtained from the Propelo webapp." field="levelOpsApiKey"
                         help="/plugin/${it.urlName}/help/help-levelOpsApiKey.html">
                         <f:password value="${it.configuration.levelOpsApiKey}" name="levelOpsApiKey"
                             checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsApiKey?value='+escape(this.value)"/>
                     </f:entry>
-                    <f:entry title="LevelOps Status" field="levelOpsStatus"
+                    <f:entry title="Propelo Status" field="levelOpsStatus"
                         help="/plugin/${it.urlName}/help/help-jenkinsStatus.html">
                         <f:readOnlyTextbox value="${it.jenkinsStatus}" name="levelOpsStatus"
                        checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsStatus?value='+escape(this.value)"/>
@@ -30,7 +30,7 @@
                 </f:section>
 
                 <f:section title="Monitoring settings">
-                    <f:entry title="LevelOps Plugins directory" field="levelOpsPluginPath"
+                    <f:entry title="Propelo Plugins Directory" field="levelOpsPluginPath"
                         help="/plugin/${it.urlName}/help/help-levelOpsPluginPath.html">
                         <f:textbox value="${it.configuration.levelOpsPluginPath}" name="levelOpsPluginPath"
                             checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsPluginPath?value='+escape(this.value)"/>

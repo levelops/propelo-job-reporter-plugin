@@ -4,7 +4,7 @@ Propelo's Jenkins Plugin to report jobs's logs and metadata
 Propelo's Jenkins Plugin
 =======================
  
-Takes file artifacts (e.g. SAST reports) out of CI/CD Jenkins Builds and pushes them to LevelOps API.
+Takes file artifacts (e.g. SAST reports) out of CI/CD Jenkins Builds and pushes them to Propelo's API.
 
 
 

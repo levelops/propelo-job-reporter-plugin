@@ -42,11 +42,11 @@ public class JobConfigContentChangeListener extends SaveableListener {
             //We get too many calls here when multibranch project is checked for changes, moving to finer
             LOGGER.finer("JobConfigHistorySaveableListener.onChange started");
             if (plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
-                LOGGER.log(SEVERE, "LevelOps Plugin Directory is invalid, cannot process config change! path: " + plugin.getLevelOpsPluginPath());
+                LOGGER.log(SEVERE, "Propelo Plugin Directory is invalid, cannot process config change! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
             if (StringUtils.isBlank(plugin.getLevelOpsApiKey())) {
-                LOGGER.log(FINE, "LevelOps Api Key is null or empty, will not collect data");
+                LOGGER.log(FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
             LOGGER.log(FINEST, "JobConfigContentChangeListener onChange {0}", xmlFile.getFile());
