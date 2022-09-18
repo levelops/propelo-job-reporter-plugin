@@ -284,7 +284,7 @@ public class LevelOpsPluginImpl extends Plugin {
                 instance.getExpandedLevelOpsPluginDir(),
                 instance.getDataDirectory(), instance.getDataDirectoryWithVersion());
         ProxyConfigService.ProxyConfig proxyConfig = ProxyConfigService.generateConfigFromJenkinsProxyConfiguration(Jenkins.getInstanceOrNull());
-        return LevelOpsPluginConfigValidator.performApiKeyValidation(levelOpsApiKey.getPlainText(), trustAllCertificates,
+        return LevelOpsPluginConfigValidator.performApiKeyValidation(levelOpsApiKey, trustAllCertificates,
                 jenkinsInstanceGuidService.createOrReturnInstanceGuid(), instance.getJenkinsInstanceName(), instance.getPluginVersionString(), proxyConfig);
     }
 
@@ -324,7 +324,9 @@ public class LevelOpsPluginImpl extends Plugin {
         }
     }
 
+    @POST
     public FormValidation performBlueOceanRestValidation(String jenkinsBaseUrl, String jenkinsUserName, String jenkinsUserToken, boolean baseUrlValidation, boolean userNameValidation, boolean userTokenValidation){
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         LOGGER.log(Level.FINEST, "jenkinsBaseUrl = {0}", jenkinsBaseUrl );
         LOGGER.log(Level.FINEST, "jenkinsUserName = {0}", jenkinsUserName );
         LOGGER.log(Level.FINEST, "jenkinsUserToken = {0}", jenkinsUserToken );
@@ -389,16 +391,22 @@ public class LevelOpsPluginImpl extends Plugin {
             return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken.getPlainText(), true, false, false);
         }
     }
+
+    @POST
     public FormValidation doCheckJenkinsUserName(final StaplerRequest res, final StaplerResponse rsp,
                                                  @QueryParameter("value") final String jenkinsUserName) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         if(StringUtils.isBlank(jenkinsUserName)) {
             return FormValidation.error("Jenkins User Name cannot be null or empty!");
         } else {
             return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken.getPlainText(), false, true, false);
         }
     }
+
+    @POST
     public FormValidation doCheckJenkinsUserToken(final StaplerRequest res, final StaplerResponse rsp,
                                                   @QueryParameter("value") final Secret jenkinsUserToken) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         LOGGER.log(Level.FINEST, "jenkinsUserToken = {0}", jenkinsUserToken);
         if(jenkinsUserToken != null && StringUtils.isBlank(jenkinsUserToken.getPlainText())) {
             return FormValidation.error("Jenkins User Token cannot be null or empty!");
