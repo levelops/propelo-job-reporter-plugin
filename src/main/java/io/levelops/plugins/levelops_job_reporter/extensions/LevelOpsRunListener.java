@@ -11,7 +11,6 @@ import io.levelops.plugins.commons.models.blue_ocean.JobRun;
 import io.levelops.plugins.commons.service.JenkinsConfigSCMService;
 import io.levelops.plugins.commons.service.JenkinsInstanceGuidService;
 import io.levelops.plugins.commons.service.JenkinsLocationConfigParserService;
-import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.commons.service.JobLogsService;
 import io.levelops.plugins.commons.service.JobRunCompleteNotificationService;
 import io.levelops.plugins.commons.service.JobRunGitChangesService;
@@ -19,6 +18,8 @@ import io.levelops.plugins.commons.service.JobRunParserService;
 import io.levelops.plugins.commons.service.JobRunPerforceChangesService;
 import io.levelops.plugins.commons.service.JobSCMService;
 import io.levelops.plugins.commons.service.LevelOpsPluginConfigService;
+import io.levelops.plugins.commons.service.ProxyConfigService;
+import io.levelops.plugins.commons.utils.DateUtils;
 import io.levelops.plugins.commons.utils.JsonUtils;
 import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
 import io.levelops.plugins.levelops_job_reporter.service.JobRunCodeCoverageResultsService;
@@ -27,6 +28,8 @@ import io.levelops.plugins.levelops_job_reporter.service.JobRunCompleteDataServi
 import io.levelops.plugins.levelops_job_reporter.service.JobRunPostBuildPublisherResultsService;
 import io.levelops.plugins.levelops_job_reporter.service.JobRunTestResultsService;
 import jenkins.model.Jenkins;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -35,6 +38,7 @@ import java.lang.invoke.MethodHandles;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -171,10 +175,24 @@ public class LevelOpsRunListener extends RunListener<Run> {
             performJobRunCompleteNotification(jobRunDetail, scmResult.getUrl(), scmResult.getUserName(),
                     getJenkinsInstanceGuid(), plugin.getJenkinsInstanceName(), getJenkinsInstanceUrl(),
                     jobRunCompleteData, scmCommitIds, failedLogFileUUID, proxyConfig);
+            // deleting data directory
+            deleteJobRunDataCompleteDirectoryContents();
             //performJobRunCompleteNotification fn logs have this.
             //LOGGER.log(Level.INFO, "Completed processing complete event jobFullName={0}, build number = {1}", new Object[]{jobRunDetail.getJobFullName(), jobRunDetail.getBuildNumber()});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error in RunListener onCompleted!", e);
+        }
+    }
+
+    private void deleteJobRunDataCompleteDirectoryContents() {
+        File dataDirectoryWithVersion = plugin.getDataDirectoryWithVersion();
+        if (dataDirectoryWithVersion != null && dataDirectoryWithVersion.exists()) {
+            LOGGER.log(Level.FINEST, "Delete Job Run Complete Data Directory (date-$date) starting");
+            for (File file : Objects.requireNonNull(dataDirectoryWithVersion.listFiles())) {
+                if (!file.getName().equalsIgnoreCase(DateUtils.getDateFormattedDirName())) {
+                    FileUtils.deleteQuietly(file);
+                }
+            }
         }
     }
 

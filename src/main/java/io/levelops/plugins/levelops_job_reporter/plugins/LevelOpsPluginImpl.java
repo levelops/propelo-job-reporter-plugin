@@ -20,6 +20,8 @@ import io.levelops.plugins.commons.utils.JsonUtils;
 import io.levelops.plugins.commons.utils.Utils;
 import io.levelops.plugins.levelops_job_reporter.extensions.LevelOpsMgmtLink;
 import jenkins.model.Jenkins;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -27,6 +29,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.verb.POST;
 
 import javax.net.ssl.SSLException;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -34,8 +37,11 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.levelops.plugins.commons.plugins.Common.REPORTS_DIR_NAME;
 
@@ -56,6 +62,7 @@ public class LevelOpsPluginImpl extends Plugin {
     private String bullseyeXmlResultPaths = "";
     private long configUpdatedAt = System.currentTimeMillis();
     private static LevelOpsPluginImpl instance = null;
+    private static final Pattern OLDER_DIRECTORIES_PATTERN = Pattern.compile("^(run-complete-data-)");
 
     //ToDo: This is deprecated! Fix soon.
     public LevelOpsPluginImpl() {
@@ -66,6 +73,9 @@ public class LevelOpsPluginImpl extends Plugin {
     public void start() throws Exception {
         super.start();
         load();
+        LOGGER.info("Deleting Older directories during plugin initialization.Started");
+        deleteOlderDirectories();
+        LOGGER.info("Deleting Older directories during plugin initialization.Completed");
         LOGGER.fine("'" + LevelOpsMgmtLink.PLUGIN_DISPLAY_NAME + "' plugin initialized.");
     }
 
@@ -164,6 +174,20 @@ public class LevelOpsPluginImpl extends Plugin {
     }
     public File getReportsDirectory() {
         return buildReportsDirectory(this.getExpandedLevelOpsPluginPath());
+    }
+
+    private void deleteOlderDirectories() {
+        File currentDataDirectoryWithVersion = getDataDirectoryWithVersion();
+        File expandedLevelOpsPluginDir = getExpandedLevelOpsPluginDir();
+        if (expandedLevelOpsPluginDir != null && expandedLevelOpsPluginDir.exists()
+                && currentDataDirectoryWithVersion != null) {
+            for (File file : Objects.requireNonNull(expandedLevelOpsPluginDir.listFiles())) {
+                Matcher matcher = OLDER_DIRECTORIES_PATTERN.matcher(file.getName());
+                if (matcher.find() && !file.getName().equalsIgnoreCase(currentDataDirectoryWithVersion.getName())) {
+                    FileUtils.deleteQuietly(file);
+                }
+            }
+        }
     }
 
     public String getPluginVersionString() {

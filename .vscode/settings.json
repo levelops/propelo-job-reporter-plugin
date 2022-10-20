@@ -4,5 +4,31 @@
         "titleBar.activeBackground": "#2B3494",
         "titleBar.activeForeground": "#FCFCFE"
     },
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true,
+        "**/.idea": true,
+        "**/.gradle": true,
+        "**/gradle": true,
+        "**/build": true,
+        "**/bin": true
+    },
+    "java.dependency.autoRefresh": true,
+    // "java.jdt.ls.vmargs": "-javaagent:/home/ileon/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.22/9c08ea24c6eb714e2d6170e8122c069a0ba9aacf/lombok-1.18.22.jar -Xmx6G -Xms2G",
+    "java.server.launchMode": "Hybrid",
+    "java.completion.maxResults": 50,
+    "quarkus.tools.validation.enabled": false,
+    "java.completion.importOrder": [
+        "",
+        "org",
+        "javax",
+        "java",
+        "#"
+    ],
+    // "java.home": "/usr/lib/jvm/java-13-openjdk-amd64",
+    "java.jdt.ls.java.home": "/usr/lib/jvm/java-13-openjdk-amd64",
+    "java.import.gradle.wrapper.enabled": true
 }
