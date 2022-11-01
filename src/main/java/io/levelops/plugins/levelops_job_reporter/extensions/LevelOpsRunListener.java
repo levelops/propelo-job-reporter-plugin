@@ -10,7 +10,6 @@ import io.levelops.plugins.commons.models.JobRunDetail;
 import io.levelops.plugins.commons.models.blue_ocean.JobRun;
 import io.levelops.plugins.commons.service.JenkinsConfigSCMService;
 import io.levelops.plugins.commons.service.JenkinsInstanceGuidService;
-import io.levelops.plugins.commons.service.JenkinsLocationConfigParserService;
 import io.levelops.plugins.commons.service.JobLogsService;
 import io.levelops.plugins.commons.service.JobRunCompleteNotificationService;
 import io.levelops.plugins.commons.service.JobRunGitChangesService;
@@ -60,9 +59,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
 
 
     private String getJenkinsInstanceUrl() {
-        JenkinsLocationConfigParserService jenkinsLocationConfigParserService = new JenkinsLocationConfigParserService();
-        String jenkinsInstanceUrl = jenkinsLocationConfigParserService.parseJenkinsInstanceUrl(plugin.getHudsonHome());
-        return jenkinsInstanceUrl;
+        return Jenkins.get().getRootUrl();
     }
 
     private String getJenkinsInstanceGuid() {
@@ -124,11 +121,11 @@ public class LevelOpsRunListener extends RunListener<Run> {
         try {
             LOGGER.finer("LevelOpsRunListener.onCompleted");
             if (plugin.getLevelOpsApiKey() != null && plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
-                LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process job run completed event! path: " + plugin.getLevelOpsPluginPath());
+                LOGGER.log(Level.SEVERE, "Propelo Plugin Directory is invalid, cannot process job run completed event! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
             if (StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
-                LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
+                LOGGER.log(Level.FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
 
@@ -199,7 +196,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
     private void performJobRunCompleteNotification(JobRunDetail jobRunDetail, String scmUrl, String scmUserId, String jenkinsInstanceGuid, String jenkinsInstanceName,
                                                    String jenkinsInstanceUrl, JobRunCompleteData jobRunCompleteData, List<String> scmCommitIds, UUID failedLogFileUUID, final ProxyConfigService.ProxyConfig proxyConfig) {
 
-        LOGGER.finest("Send Job Runs Completed Notifications to LevelOps is true, performing job run complete notification");
+        LOGGER.finest("Send Job Runs Completed Notifications to Propelo is true, performing job run complete notification");
 
         JobRunCompleteNotificationService jobRunCompleteNotificationService = new JobRunCompleteNotificationService(LevelOpsPluginConfigService.getInstance().getLevelopsConfig().getApiUrl(), mapper);
         List<String> runIds;

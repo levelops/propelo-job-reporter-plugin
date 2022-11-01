@@ -31,7 +31,7 @@ public class JobRunTestResultsService {
             return;
         }
         try {
-            LOGGER.log(Level.FINEST, "Levelops junit post build publisher called");
+            LOGGER.log(Level.FINEST, "Propelo's junit post build publisher called");
             final List<Byte> bytes = workspace.act(new ArchiveJobRunResultFiles(JUNIT_TEST_REPORTS_PATH));
             final File junitReports = new File(completeDataDirectory, LEVELOPS_JUNIT_REPORTS_ZIP);
             LOGGER.log(Level.FINEST, "junitReports = {0}", junitReports);

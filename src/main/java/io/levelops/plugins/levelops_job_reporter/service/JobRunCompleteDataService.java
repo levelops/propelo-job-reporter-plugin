@@ -13,6 +13,7 @@ import io.levelops.plugins.commons.service.BlueOceanRestClient;
 import io.levelops.plugins.commons.service.JobFullNameConverter;
 import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 

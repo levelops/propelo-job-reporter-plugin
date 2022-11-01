@@ -5,6 +5,7 @@ import hudson.Plugin;
 import hudson.scheduler.CronTab;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
+import hudson.util.VersionNumber;
 import io.levelops.plugins.commons.models.JenkinsStatusInfo;
 import io.levelops.plugins.commons.models.PluginVersion;
 import io.levelops.plugins.commons.models.blue_ocean.Organization;
@@ -12,7 +13,6 @@ import io.levelops.plugins.commons.service.BlueOceanRestClient;
 import io.levelops.plugins.commons.service.JenkinsInstanceGuidService;
 import io.levelops.plugins.commons.service.JenkinsStatusService;
 import io.levelops.plugins.commons.service.LevelOpsPluginConfigValidator;
-import io.levelops.plugins.commons.service.PluginVersionService;
 import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.commons.utils.DateUtils;
 import io.levelops.plugins.commons.utils.EnvironmentVariableNotDefinedException;
@@ -48,6 +48,7 @@ import static io.levelops.plugins.commons.plugins.Common.REPORTS_DIR_NAME;
 public class LevelOpsPluginImpl extends Plugin {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
     private static final String DATA_DIR_NAME = "run-complete-data";
+    public static final String PLUGIN_SHORT_NAME = "propelo-job-reporter";
     private Secret levelOpsApiKey = Secret.fromString("");
     private String levelOpsPluginPath = "${JENKINS_HOME}/levelops-jenkin";
     private boolean trustAllCertificates = false;
@@ -55,8 +56,8 @@ public class LevelOpsPluginImpl extends Plugin {
     private String jenkinsInstanceName = "Jenkins Instance";
     public Boolean isRegistered = false;
     private String jenkinsStatus = "";
-    private String jenkinsBaseUrl = "http://localhost:8080";
     private String jenkinsUserName = "";
+    private String jenkinsBaseUrl = "";
     private Secret jenkinsUserToken = Secret.fromString("");
     private long heartbeatDuration = 60;
     private String bullseyeXmlResultPaths = "";
@@ -91,6 +92,14 @@ public class LevelOpsPluginImpl extends Plugin {
         return (jenkins == null) ? null : jenkins.getRootDir();
     }
 
+    public void setJenkinsBaseUrl(final String jenkinsBaseUrl){
+        this.jenkinsBaseUrl = jenkinsBaseUrl;
+    }
+
+    public String getJenkinsBaseUrl(){
+        return this.jenkinsBaseUrl;
+    }
+
     public Secret getLevelOpsApiKey() {
         return levelOpsApiKey;
     }
@@ -100,7 +109,7 @@ public class LevelOpsPluginImpl extends Plugin {
     }
 
     /**
-     * Get the LevelOps plugin path as entered by the user. May contain environment variables.
+     * Get the Propelo plugin path as entered by the user. May contain environment variables.
      *
      * If you need a path that can be used as is (env. vars expanded), please use @link{getExpandedLevelOpsPluginPath}.
      *
@@ -192,10 +201,7 @@ public class LevelOpsPluginImpl extends Plugin {
 
     public String getPluginVersionString() {
         LOGGER.log(Level.FINEST, "getPluginVersionString starting");
-        PluginVersionService pluginVersionService = new PluginVersionService();
-        PluginVersion pluginVersion = pluginVersionService.getPluginVersion(this.getClass());
-        LOGGER.log(Level.FINEST, "pluginVersion = {0}", pluginVersion);
-        String pluginVersionString = pluginVersion.getVersion();
+        String pluginVersionString = Jenkins.get().getPluginManager().getPlugin(LevelOpsPluginImpl.PLUGIN_SHORT_NAME).getVersion();
         LOGGER.log(Level.FINEST, "getPluginVersionString completed pluginVersionString = {0}", pluginVersionString);
         return pluginVersionString;
     }
@@ -228,14 +234,6 @@ public class LevelOpsPluginImpl extends Plugin {
         File dataDirWithRotation = new File(dataDirWithVersion, DateUtils.getDateFormattedDirName());
         LOGGER.log(Level.FINEST, "dataDirWithRotation = {0}", dataDirWithRotation);
         return dataDirWithRotation;
-    }
-
-    public String getJenkinsBaseUrl() {
-        return jenkinsBaseUrl;
-    }
-
-    public void setJenkinsBaseUrl(String jenkinsBaseUrl) {
-        this.jenkinsBaseUrl = jenkinsBaseUrl;
     }
 
     public String getJenkinsUserName() {
@@ -412,7 +410,7 @@ public class LevelOpsPluginImpl extends Plugin {
         if(StringUtils.isBlank(jenkinsBaseUrl)) {
             return FormValidation.error("Jenkins Base Url cannot be null or empty!");
         } else {
-            return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken.getPlainText(), true, false, false);
+            return performBlueOceanRestValidation(Jenkins.get().getRootUrl(), jenkinsUserName, jenkinsUserToken.getPlainText(), true, false, false);
         }
     }
 
@@ -423,7 +421,7 @@ public class LevelOpsPluginImpl extends Plugin {
         if(StringUtils.isBlank(jenkinsUserName)) {
             return FormValidation.error("Jenkins User Name cannot be null or empty!");
         } else {
-            return performBlueOceanRestValidation(jenkinsBaseUrl, jenkinsUserName, jenkinsUserToken.getPlainText(), false, true, false);
+            return performBlueOceanRestValidation(Jenkins.get().getRootUrl(), jenkinsUserName, jenkinsUserToken.getPlainText(), false, true, false);
         }
     }
 

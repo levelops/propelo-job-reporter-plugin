@@ -5,12 +5,11 @@
         <st:include it="${app}" page="sidepanel.jelly"/>
         <l:main-panel>
             <h1>
-                <img src="${imagesURL}/48x48/${it.iconFileName}" alt=""/>
-                ${it.displayName} Configuration
+                <img src="${rootURL}/plugin/${it.urlName}/images/propelo_logo.png" alt=""/> ${it.displayName} Configuration
             </h1>
 
             <f:form method="post" action="saveSettings">
-                <f:section title="LevelOps">
+                <f:section title="Propelo API">
                     <f:entry title="Jenkins Instance Name" field="jenkinsInstanceName"
                         help="/plugin/${it.urlName}/help/help-jenkinsInstanceName.html">
                         <f:textbox value="${it.configuration.jenkinsInstanceName}" name="jenkinsInstanceName"
@@ -35,16 +34,17 @@
                         <f:textbox value="${it.configuration.levelOpsPluginPath}" name="levelOpsPluginPath"
                             checkUrl="'${rootURL}/plugin/${it.urlName}/checkLevelOpsPluginPath?value='+escape(this.value)" checkMethod="post"/>
                     </f:entry>
-
+<!--
                     <f:entry title="Jenkins Base Url" field="jenkinsBaseUrl"
                         help="/plugin/${it.urlName}/help/help-jenkinsBaseUrl.html">
                         <f:textbox value="${it.configuration.jenkinsBaseUrl}" name="jenkinsBaseUrl"
                             checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsBaseUrl?value='+escape(this.value)" checkMethod="post"/>
                     </f:entry>
+                    -->
                     <f:entry title="Jenkins User Name" field="jenkinsUserName"
                         help="/plugin/${it.urlName}/help/help-jenkinsUserName.html">
                         <f:textbox value="${it.configuration.jenkinsUserName}" name="jenkinsUserName"
-                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsUserName?value='+escape(this.value)"/>
+                            checkUrl="'${rootURL}/plugin/${it.urlName}/checkJenkinsUserName?value='+escape(this.value)" checkMethod="post"/>
                     </f:entry>
                     <f:entry title="Jenkins User Token" description="Jenkins User Token" field="jenkinsUserToken"
                         help="/plugin/${it.urlName}/help/help-jenkinsUserToken.html">

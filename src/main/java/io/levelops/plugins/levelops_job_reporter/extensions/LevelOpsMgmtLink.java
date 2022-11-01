@@ -5,6 +5,8 @@ import hudson.model.Hudson;
 import hudson.model.ManagementLink;
 import hudson.util.Secret;
 import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
+import jenkins.model.Jenkins;
+
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 @Extension
 public class LevelOpsMgmtLink extends ManagementLink {
@@ -29,6 +32,9 @@ public class LevelOpsMgmtLink extends ManagementLink {
 
     @Override
     public String getIconFileName() {
+        // return Jenkins.get().getRootUrl() + "plugin/propelo-job-reporter/images/48x48/propelo_logo.png";
+        // return "propelo_logo.png";
+        // return "/plugin/propelo-job-reporter/images/propelo_logo.png";
         return "package.png";
     }
 
@@ -63,7 +69,7 @@ public class LevelOpsMgmtLink extends ManagementLink {
         final LevelOpsPluginImpl plugin = LevelOpsPluginImpl.getInstance();
         plugin.setLevelOpsApiKey(Secret.fromString(levelOpsApiKey));
         plugin.setLevelOpsPluginPath(levelOpsPluginPath);
-        plugin.setJenkinsBaseUrl(jenkinsBaseUrl);
+        plugin.setJenkinsBaseUrl(Jenkins.get().getRootUrl());
         plugin.setJenkinsUserName(jenkinsUserName);
         plugin.setJenkinsUserToken(Secret.fromString(jenkinsUserToken));
         plugin.setBullseyeXmlResultPath(bullseyeXmlResultPaths);

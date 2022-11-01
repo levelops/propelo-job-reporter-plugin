@@ -72,11 +72,11 @@ public class JobConfigStateChangeListener extends ItemListener {
             }
             LOGGER.fine("JobConfigStateChangeListener.onLocationChanged started");
             if (plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
-                LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config location change! path: " + plugin.getLevelOpsPluginPath());
+                LOGGER.log(Level.SEVERE, "Propelo Plugin Directory is invalid, cannot process config location change! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
             if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
-                LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
+                LOGGER.log(Level.FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
             AbstractItem abstractItem = (AbstractItem) item;
@@ -112,11 +112,11 @@ public class JobConfigStateChangeListener extends ItemListener {
             }
             LOGGER.fine("JobConfigStateChangeListener.onRenamed started");
             if (plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
-                LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config rename! path: " + plugin.getLevelOpsPluginPath());
+                LOGGER.log(Level.SEVERE, "Propelo Plugin Directory is invalid, cannot process config rename! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
             if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
-                LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
+                LOGGER.log(Level.FINE, "Propelo Api Key is null or empty, will not collect data");
                 return;
             }
             AbstractItem abstractItem = (AbstractItem) item;
@@ -146,11 +146,11 @@ public class JobConfigStateChangeListener extends ItemListener {
             }
             LOGGER.fine("JobConfigStateChangeListener.onDeleted started");
             if (plugin.isExpandedLevelOpsPluginPathNullOrEmpty()) {
-                LOGGER.log(Level.SEVERE, "LevelOps Plugin Directory is invalid, cannot process config delete! path: " + plugin.getLevelOpsPluginPath());
+                LOGGER.log(Level.SEVERE, "Propelo's Plugin Directory is invalid, cannot process config delete! path: " + plugin.getLevelOpsPluginPath());
                 return;
             }
             if (plugin.getLevelOpsApiKey() != null && StringUtils.isBlank(plugin.getLevelOpsApiKey().getPlainText())) {
-                LOGGER.log(Level.FINE, "LevelOps Api Key is null or empty, will not collect data");
+                LOGGER.log(Level.FINE, "Propelo's Api Key is null or empty, will not collect data");
                 return;
             }
             AbstractItem abstractItem = (AbstractItem) item;

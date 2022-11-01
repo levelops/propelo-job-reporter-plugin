@@ -15,7 +15,7 @@ Build
   > - Build command: `mvn install`
   >
   > - This creates an `hpi` file that can be uploaded to Jenkins:  
-  > `target/levelops-jenkins.hpi`
+  > `target/propelo-job-reporter.hpi`
   >  
   > Notes:
   > - Use Java 8 to build otherwise there will be some issues with Javadoc step, e.g.:  
@@ -27,7 +27,7 @@ Build
   > - Build command: JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./gradlew clean build
   >  
   > - This creates an `hpi` file that can be uploaded to Jenkins:  
-  > `build/libs/levelops-jenkin.hpi`
+  > `build/libs/propelo-job-reporter.hpi`
   > 
   > Notes:
   > - Use Java 8 to build otherwise there will be some issues with Javadoc step, e.g.:  

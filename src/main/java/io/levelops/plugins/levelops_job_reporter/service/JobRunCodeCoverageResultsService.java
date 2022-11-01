@@ -31,7 +31,7 @@ public class JobRunCodeCoverageResultsService {
             return;
         }
         try {
-            LOGGER.log(Level.FINEST, "Levelops code coverage post build publisher called");
+            LOGGER.log(Level.FINEST, "Propelo code coverage post build publisher called");
             final List<Byte> bytes = workspace.act(new ArchiveJobRunResultFiles(JUNIT_TEST_REPORTS_PATH));
             final File codeCoverageResults = new File(completeDataDirectory, LEVELOPS_CODE_COVERAGE_ZIP);
             LOGGER.log(Level.FINEST, "codeCoverageResults = {0}", codeCoverageResults);

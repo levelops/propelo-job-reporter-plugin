@@ -4,19 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>plugin</artifactId>
         <groupId>org.jenkins-ci.plugins</groupId>
-        <version>4.0</version>
+        <artifactId>plugin</artifactId>
+        <version>4.4</version>
+        <relativePath />
     </parent>
 
-    <artifactId>propelo-job-reporter</artifactId>
     <groupId>io.jenkins.plugins</groupId>
+    <artifactId>propelo-job-reporter</artifactId>
     <inceptionYear>2019</inceptionYear>
     <packaging>hpi</packaging>
     <version>${revision}</version>
 
     <name>Propelo's Job Reporter</name>
+    
     <description>Reports back to Propelo after each Job Run with metadata and unsuccessful job logs.</description>
+    <!-- <display-info>ok</display-info> -->
     <url>https://app.propelo.ai</url>
     <licenses>
         <license>
@@ -54,13 +57,14 @@
         <revision>1.0.20</revision>
         <product.build.sourceEncoding>UTF-8</product.build.sourceEncoding>
         <commons.validator.version>1.6</commons.validator.version>
+        <commons.beanutils.version>1.9.4</commons.beanutils.version>
         <commons.logging.version>1.2</commons.logging.version>
         <animal.sniffer.annotations>1.9</animal.sniffer.annotations>
         <spotbugs.version>4.7.3</spotbugs.version>
         <findbugs.skip>true</findbugs.skip>
         <spotbugs.skip>true</spotbugs.skip>
         <java.level>8</java.level>
-        <jenkins.version>2.196</jenkins.version>
+        <jenkins.version>2.200</jenkins.version>
     </properties>
 
     <build>
@@ -68,7 +72,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version><!--$NO-MVN-MAN-VER$ -->
+                <version>3.8.1</version><!--$NO-MVN-MAN-VER$ -->
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -77,7 +81,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version><!--$NO-MVN-MAN-VER$ -->
+                <version>3.0.0-M6</version><!--$NO-MVN-MAN-VER$ -->
             </plugin>
 
             <plugin>
@@ -87,10 +91,29 @@
                     <source>8</source>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>${skip.unit.tests}</skipTests>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <!-- Start: Plugins -->
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>mailer</artifactId>
+            <version>1.20</version>
+        </dependency>
+        <!-- End: plugins-->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons.beanutils.version}</version>
+        </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
@@ -176,13 +199,19 @@
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>stax2-api</artifactId>
-            <version>4.1</version>
+            <version>4.2.1</version>
         </dependency>
 
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
             <version>2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

@@ -8,13 +8,12 @@ import io.levelops.plugins.commons.models.JobConfigChangeType;
 import io.levelops.plugins.commons.models.JobNameDetails;
 import io.levelops.plugins.commons.service.JenkinsConfigSCMService;
 import io.levelops.plugins.commons.service.JenkinsInstanceGuidService;
-import io.levelops.plugins.commons.service.JenkinsLocationConfigParserService;
-import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.commons.service.JobConfigChangeNotificationService;
 import io.levelops.plugins.commons.service.JobRunParserService;
 import io.levelops.plugins.commons.service.JobSCMService;
 import io.levelops.plugins.commons.service.JobSCMStorageService;
 import io.levelops.plugins.commons.service.LevelOpsPluginConfigService;
+import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.commons.utils.MimickedUser;
 import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
 import jenkins.model.Jenkins;
@@ -70,7 +69,7 @@ public class ConfigChangeService {
     }
 
     private void performJobConfigChangeNotification(JobConfigChange jobConfigChange, String scmUrl, String scmUserId, String jenkinsInstanceGuid, String jenkinsInstanceName, String jenkinsInstanceUrl) {
-        LOGGER.finest("Send Job Config Change Notifications to LevelOps is true, performing job config change notification");
+        LOGGER.finest("Send Job Config Change Notifications to Propelo is true, performing job config change notification");
         ProxyConfigService.ProxyConfig proxyConfig = ProxyConfigService.generateConfigFromJenkinsProxyConfiguration(Jenkins.getInstanceOrNull());
 
         JobConfigChangeNotificationService jobConfigChangeNotificationService = new JobConfigChangeNotificationService(LevelOpsPluginConfigService.getInstance().getLevelopsConfig().getApiUrl(),mapper);
@@ -142,9 +141,7 @@ public class ConfigChangeService {
     }
 
     private String getJenkinsInstanceUrl() {
-        JenkinsLocationConfigParserService jenkinsLocationConfigParserService = new JenkinsLocationConfigParserService();
-        String jenkinsInstanceUrl = jenkinsLocationConfigParserService.parseJenkinsInstanceUrl(plugin.getHudsonHome());
-        return jenkinsInstanceUrl;
+        return Jenkins.get().getRootUrl();
     }
 
     private String getJenkinsInstanceGuid(){

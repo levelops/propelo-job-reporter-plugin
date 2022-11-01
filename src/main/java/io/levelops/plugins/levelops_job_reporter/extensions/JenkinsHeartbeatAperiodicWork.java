@@ -10,13 +10,13 @@ import io.levelops.plugins.commons.models.HeartbeatResponse;
 import io.levelops.plugins.commons.models.jenkins.saas.GenericResponse;
 import io.levelops.plugins.commons.service.GenericRequestService;
 import io.levelops.plugins.commons.service.JenkinsInstanceGuidService;
-import io.levelops.plugins.commons.service.JenkinsLocationConfigParserService;
 import io.levelops.plugins.commons.service.JenkinsStatusService;
-import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.commons.service.LevelOpsPluginConfigService;
+import io.levelops.plugins.commons.service.ProxyConfigService;
 import io.levelops.plugins.commons.utils.JsonUtils;
 import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
 import jenkins.model.Jenkins;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -116,7 +116,6 @@ public class JenkinsHeartbeatAperiodicWork extends AperiodicWork {
     }
 
     private String getJenkinsInstanceUrl() {
-        JenkinsLocationConfigParserService jenkinsLocationConfigParserService = new JenkinsLocationConfigParserService();
-        return jenkinsLocationConfigParserService.parseJenkinsInstanceUrl(plugin.getHudsonHome());
+        return Jenkins.get().getRootUrl();
     }
 }

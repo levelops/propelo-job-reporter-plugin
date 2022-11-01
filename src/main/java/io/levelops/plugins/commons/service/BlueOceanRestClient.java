@@ -41,6 +41,7 @@ public class BlueOceanRestClient {
     private final ProxyConfigService.ProxyConfig proxyConfig;
 
     public BlueOceanRestClient(String baseUrl, String userName, String apiToken, boolean trustAllCertificates, ObjectMapper mapper, final ProxyConfigService.ProxyConfig proxyConfig) {
+        System.out.println("BaseUrl for Blue Ocean Calls: " + baseUrl);
         this.baseUrl = baseUrl;
         this.userName = userName;
         this.apiToken = apiToken;

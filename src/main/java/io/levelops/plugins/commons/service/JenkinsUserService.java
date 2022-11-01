@@ -1,19 +1,10 @@
 package io.levelops.plugins.commons.service;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import io.levelops.plugins.commons.models.jenkins.input.UserData;
-import io.levelops.plugins.commons.models.jenkins.input.UsersConfig;
 import io.levelops.plugins.commons.models.jenkins.output.User;
-import io.levelops.plugins.commons.utils.XmlUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,49 +14,14 @@ public class JenkinsUserService {
     public static final String USERS_LIST_DIR = "users";
     public static final String CONFIG_XML = "config.xml";
 
-    public List<User> readUsers(Path usersDirectory){
-        if (usersDirectory == null) {
-            return Collections.emptyList();
-        }
-        File usersSummaryFile = new File(usersDirectory.toFile(), CONFIG_XML);
-        if(!usersSummaryFile.exists()) {
-            return Collections.emptyList();
-        }
-
+    public List<User> readUsers(){
         List<User> users = new ArrayList<>();
-        XmlMapper xmlMapper = XmlUtils.getObjectMapper();
         try {
-            UsersConfig usersConfig = xmlMapper.readValue(usersSummaryFile, UsersConfig.class);
-            if((usersConfig == null) || (usersConfig.getIdToDirectoryNameMap() == null)){
-                return Collections.emptyList();
+            for(hudson.model.User u:hudson.model.User.getAll()){
+                users.add(new User(u.getId(), u.getFullName(), u.getProperty(hudson.tasks.Mailer.UserProperty.class).getAddress()));
             }
-            for(UsersConfig.ConcurrentHashMap.Entry entry : usersConfig.getIdToDirectoryNameMap().getEntry()){
-                if ((entry== null) || (CollectionUtils.isEmpty(entry.getString())) || (entry.getString().size() <2)){
-                    continue;
-                }
-                String userName = entry.getString().get(0);
-                String fileName = entry.getString().get(1);
-                if(StringUtils.isBlank(fileName)){
-                    continue;
-                }
-                File usersDetailsDir = new File(usersDirectory.toFile(), fileName);
-                File userFile = new File(usersDetailsDir, CONFIG_XML);
-                if(!userFile.exists()){
-                    continue;
-                }
-                UserData user = xmlMapper.readValue(userFile, UserData.class);
-                if(user == null){
-                    continue;
-                }
-                String emailAddress = null;
-                if ((user.getProperties() != null) && (user.getProperties().getMailer() != null)){
-                    emailAddress = user.getProperties().getMailer().getEmailAddress();
-                }
-                User newUser = new User(user.getId(), user.getFullName(), emailAddress);
-                users.add(newUser);
-            }
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "IO Exception!!", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Exception while getting all the users!!", e);
         }
         return users;
     }
