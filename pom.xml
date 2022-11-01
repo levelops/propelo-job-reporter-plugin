@@ -36,6 +36,27 @@
         <url>https://github.com/jenkinsci/propelo-job-reporter-plugin</url>
     </scm>
 
+    <developers>
+        <developer>
+            <organization>Propelo</organization>
+            <id>viraj-levelops</id>
+            <name>Viraj</name>
+            <email>viraj@propelo.ai</email>
+        </developer>
+        <developer>
+            <organization>Propelo</organization>
+            <id>maxime-levelops</id>
+            <name>Maxime</name>
+            <email>maxime@propelo.ai</email>
+        </developer>
+        <developer>
+            <organization>Propelo</organization>
+            <id>ivan-levelops</id>
+            <name>Ivan</name>
+            <email>ivan@propelo.ai</email>
+        </developer>
+    </developers>
+
     <profiles>
         <!-- Give access to Jenkins plugins -->
         <profile>
