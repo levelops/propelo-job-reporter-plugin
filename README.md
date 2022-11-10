@@ -1,15 +1,49 @@
-# jenkins-job-reporter
-Propelo's Jenkins Plugin to report jobs's logs and metadata
-
-Propelo's Jenkins Plugin
-=======================
- 
-Takes file artifacts (e.g. SAST reports) out of CI/CD Jenkins Builds and pushes them to Propelo's API.
+# propelo-job-reporter
+Propelo's Jenkins Plugin to send reports about jobs' logs and metadata to the Propelo Service.
+<br />
+<br />
+<br />
 
 
+# Installation
 
-Build
------
+### Installation pre-requirements
+---
+1. Have a Propelo account with permissions to add an integration.
+2. Have access and permissions to install plugins in Jenkins.
+
+<br />
+<br />
+
+### Instalation Steps
+---
+1. Login to your Propelo account
+2. Access the Integrations Settings Tile. 
+
+  > <img src="./docs/Integration_settings.png" style="width: 400px; hight: 400px;" alt="Integrations Tile"/>
+
+3. Add a new Jenkins integration
+
+  > <img src="./docs/jenkins.png" style="width: 400px; hight: 400px;" alt="Add a Jenkins Integration"/>
+  > <img src="./docs/jenkins2.png" style="width: 400px; hight: 400px;" alt="Install the plugin"/>
+  > <img src="./docs/jenkins3.png" style="width: 400px; hight: 400px;" alt="Add a new instance"/>
+
+
+4. Install the plugin
+
+
+5. Configure the plugin
+
+
+<br />
+<br />
+<br />
+
+# Contributing
+<br />
+
+## Build
+---
 - Maven
   > Steps:
   > - Build command: `mvn install`
@@ -21,6 +55,8 @@ Build
   > - Use Java 8 to build otherwise there will be some issues with Javadoc step, e.g.:  
   >
   >       JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 mvn install
+
+<br />
 
 - Gradle
   > Steps:
@@ -35,10 +71,12 @@ Build
   >       JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./gradlew clean build
 
 ***The findbugs step may fail (skipTests=true doesn't seem to work) but anaways runs after the build has been created***
- 
 
-Deploy
-------
+<br />
+<br />
+
+## Deploy
+---
 
 - Add Plugin: go to Manage Plugins > Advanced > Upload Plugin
 http://jenkins-host/pluginManager/advanced 
@@ -65,13 +103,16 @@ Testing
 
 - Run integration test class over Wiremock provided in resources
 
-Develop
--------
+<br />
+<br />
+
+## Develop
+---
 
 Jelly UI: https://wiki.jenkins.io/display/JENKINS/Jelly+form+controls
 
-Knowledge Base
--------
+### Knowledge Base
+---
 
 - Adding Plugin Manually return error "413 Request Entity Too Large".  
     This is a known issue with Jenkins Nginx default settings.  
