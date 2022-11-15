@@ -15,7 +15,7 @@ import io.jenkins.plugins.propelo.commons.service.JobSCMStorageService;
 import io.jenkins.plugins.propelo.commons.service.LevelOpsPluginConfigService;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
 import io.jenkins.plugins.propelo.commons.utils.MimickedUser;
-import io.jenkins.plugins.propelo.job_reporter.plugins.LevelOpsPluginImpl;
+import io.jenkins.plugins.propelo.job_reporter.plugins.PropeloPluginImpl;
 import jenkins.model.Jenkins;
 
 import java.io.File;
@@ -29,12 +29,12 @@ import static hudson.init.InitMilestone.COMPLETED;
 
 public class ConfigChangeService {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
-    private final LevelOpsPluginImpl plugin;
+    private final PropeloPluginImpl plugin;
     private final JobSCMStorageService jobSCMStorageService;
     private final JobRunParserService jobRunParserService;
     private final ObjectMapper mapper;
 
-    public ConfigChangeService(LevelOpsPluginImpl plugin, JobSCMStorageService jobSCMStorageService, JobRunParserService jobRunParserService, ObjectMapper mapper) {
+    public ConfigChangeService(PropeloPluginImpl plugin, JobSCMStorageService jobSCMStorageService, JobRunParserService jobRunParserService, ObjectMapper mapper) {
         this.plugin = plugin;
         this.jobSCMStorageService = jobSCMStorageService;
         this.jobRunParserService = jobRunParserService;

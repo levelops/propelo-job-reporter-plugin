@@ -12,7 +12,7 @@ import io.jenkins.plugins.propelo.commons.models.blue_ocean.Step;
 import io.jenkins.plugins.propelo.commons.service.BlueOceanRestClient;
 import io.jenkins.plugins.propelo.commons.service.JobFullNameConverter;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
-import io.jenkins.plugins.propelo.job_reporter.plugins.LevelOpsPluginImpl;
+import io.jenkins.plugins.propelo.job_reporter.plugins.PropeloPluginImpl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,11 +34,11 @@ public class JobRunCompleteDataService {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
     private static int MAX_RECURSION_LEVELS = 50;
 
-    private final LevelOpsPluginImpl plugin;
+    private final PropeloPluginImpl plugin;
     private final ObjectMapper mapper;
     private final ProxyConfigService.ProxyConfig proxyConfig;
 
-    public JobRunCompleteDataService(LevelOpsPluginImpl plugin, ObjectMapper mapper, final ProxyConfigService.ProxyConfig proxyConfig) {
+    public JobRunCompleteDataService(PropeloPluginImpl plugin, ObjectMapper mapper, final ProxyConfigService.ProxyConfig proxyConfig) {
         this.plugin = plugin;
         this.mapper = mapper;
         this.proxyConfig = proxyConfig;

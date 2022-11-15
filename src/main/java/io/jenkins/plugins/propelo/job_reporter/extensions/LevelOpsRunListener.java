@@ -20,7 +20,7 @@ import io.jenkins.plugins.propelo.commons.service.LevelOpsPluginConfigService;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
 import io.jenkins.plugins.propelo.commons.utils.DateUtils;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
-import io.jenkins.plugins.propelo.job_reporter.plugins.LevelOpsPluginImpl;
+import io.jenkins.plugins.propelo.job_reporter.plugins.PropeloPluginImpl;
 import io.jenkins.plugins.propelo.job_reporter.service.JobRunCodeCoverageResultsService;
 import io.jenkins.plugins.propelo.job_reporter.service.JobRunCodeCoverageXmlResultsService;
 import io.jenkins.plugins.propelo.job_reporter.service.JobRunCompleteDataService;
@@ -49,7 +49,7 @@ import static io.jenkins.plugins.propelo.commons.plugins.Common.RUN_HISTORY_COMP
 @Extension
 public class LevelOpsRunListener extends RunListener<Run> {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
-    private final LevelOpsPluginImpl plugin = LevelOpsPluginImpl.getInstance();
+    private final PropeloPluginImpl plugin = PropeloPluginImpl.getInstance();
     private static final ObjectMapper mapper = JsonUtils.buildObjectMapper();
     private static final ObjectMapper xmlMapper = new XmlMapper();
     private static final String JOB_SUCCESSFUL = "SUCCESS";

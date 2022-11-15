@@ -5,9 +5,7 @@ import hudson.Plugin;
 import hudson.scheduler.CronTab;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
-import hudson.util.VersionNumber;
 import io.jenkins.plugins.propelo.commons.models.JenkinsStatusInfo;
-import io.jenkins.plugins.propelo.commons.models.PluginVersion;
 import io.jenkins.plugins.propelo.commons.models.blue_ocean.Organization;
 import io.jenkins.plugins.propelo.commons.service.BlueOceanRestClient;
 import io.jenkins.plugins.propelo.commons.service.JenkinsInstanceGuidService;
@@ -19,6 +17,7 @@ import io.jenkins.plugins.propelo.commons.utils.EnvironmentVariableNotDefinedExc
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
 import io.jenkins.plugins.propelo.commons.utils.Utils;
 import io.jenkins.plugins.propelo.job_reporter.extensions.LevelOpsMgmtLink;
+import io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl;
 import jenkins.model.Jenkins;
 
 import org.apache.commons.io.FileUtils;
@@ -45,7 +44,7 @@ import java.util.regex.Pattern;
 
 import static io.jenkins.plugins.propelo.commons.plugins.Common.REPORTS_DIR_NAME;
 
-public class LevelOpsPluginImpl extends Plugin {
+public class PropeloPluginImpl extends Plugin {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
     private static final String DATA_DIR_NAME = "run-complete-data";
     public static final String PLUGIN_SHORT_NAME = "propelo-job-reporter";
@@ -62,11 +61,12 @@ public class LevelOpsPluginImpl extends Plugin {
     private long heartbeatDuration = 60;
     private String bullseyeXmlResultPaths = "";
     private long configUpdatedAt = System.currentTimeMillis();
-    private static LevelOpsPluginImpl instance = null;
+    private static PropeloPluginImpl instance = null;
     private static final Pattern OLDER_DIRECTORIES_PATTERN = Pattern.compile("^(run-complete-data-)");
+    
 
     //ToDo: This is deprecated! Fix soon.
-    public LevelOpsPluginImpl() {
+    public PropeloPluginImpl() {
         instance = this;
     }
 
@@ -74,13 +74,60 @@ public class LevelOpsPluginImpl extends Plugin {
     public void start() throws Exception {
         super.start();
         load();
+        // if there is an instance aleady present, ignore migration
+        if (StringUtils.isBlank(this.jenkinsBaseUrl)) { // jenkinsBaseUrl is always added during the save process. we can use this value as a check.
+            LOGGER.info("No stored configuration detected");
+            migrateOldPluginConfig();
+        }
         LOGGER.info("Deleting Older directories during plugin initialization.Started");
         deleteOlderDirectories();
         LOGGER.info("Deleting Older directories during plugin initialization.Completed");
         LOGGER.fine("'" + LevelOpsMgmtLink.PLUGIN_DISPLAY_NAME + "' plugin initialized.");
     }
 
-    public static LevelOpsPluginImpl getInstance() {
+    /**
+     * Migration for the configuration stored from LevelOpsPluginImpl to PropeloPluginImpl
+     * Should only be run if there is no a new configuration stored and if the migration has never been migrated
+     * 
+     * @throws Exception
+     */
+    private void migrateOldPluginConfig() throws Exception{
+        // Try Load old plugin values
+        LevelOpsPluginImpl oldValues = LevelOpsPluginImpl.getInstance();
+        oldValues.load();
+        // if there is a serialized version of the old "io.levelops.plugins.levelops_job_reporter.plugins.LevelOpsPluginImpl" instance and 
+        // it hasn't been marked as migrated, then take the values from that config and migrate them to a new instance of PropeloPluginImpl
+        if (StringUtils.isNotBlank(oldValues.getLevelOpsApiKey()) && !oldValues.isMigrated()) {
+            LOGGER.info("Migrating old LevelOpsPluginImpl configuration...");
+            // fill in a new instance
+            // PropeloPluginImpl newInstance = new PropeloPluginImpl();
+            instance.setBullseyeXmlResultPath(oldValues.getBullseyeXmlResultPaths());
+            instance.setLevelOpsPluginPath(oldValues.getLevelOpsPluginPath());
+            if(StringUtils.isNotBlank(oldValues.getLevelOpsApiKey())) {
+                instance.setLevelOpsApiKey(Secret.fromString(oldValues.getLevelOpsApiKey()));
+            }
+            instance.setTrustAllCertificates(oldValues.isTrustAllCertificates());
+            instance.setProductIds(oldValues.getProductIds());
+            instance.setJenkinsInstanceName(oldValues.getJenkinsInstanceName());
+            instance.setJenkinsBaseUrl(oldValues.getJenkinsBaseUrl());
+            instance.setJenkinsStatus(oldValues.getJenkinsStatus());
+            instance.setJenkinsUserName(oldValues.getJenkinsUserName());
+            if (StringUtils.isNotBlank(oldValues.getJenkinsUserToken())) {
+                instance.setJenkinsUserToken(Secret.fromString(oldValues.getJenkinsUserToken()));
+            }
+            // persist the migrated values
+            instance.save();
+            // set migrated to true on the old configuration
+            oldValues.setMigrated(true);
+            oldValues.save();
+            LOGGER.info("Old LevelOpsPluginImpl Configuration migrated!");
+        }
+        else {
+            LOGGER.info("Not migrating old settings from LevelOpsPluginImpl to PropeloPluginImpl");
+        }
+    }
+
+    public static PropeloPluginImpl getInstance() {
 //        if(instance == null){
 //            instance = new LevelOpsPluginImpl();
 //        }
@@ -201,7 +248,7 @@ public class LevelOpsPluginImpl extends Plugin {
 
     public String getPluginVersionString() {
         LOGGER.log(Level.FINEST, "getPluginVersionString starting");
-        String pluginVersionString = Jenkins.get().getPluginManager().getPlugin(LevelOpsPluginImpl.PLUGIN_SHORT_NAME).getVersion();
+        String pluginVersionString = Jenkins.get().getPluginManager().getPlugin(PropeloPluginImpl.PLUGIN_SHORT_NAME).getVersion();
         LOGGER.log(Level.FINEST, "getPluginVersionString completed pluginVersionString = {0}", pluginVersionString);
         return pluginVersionString;
     }
