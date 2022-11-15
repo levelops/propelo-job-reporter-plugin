@@ -10,7 +10,7 @@ import io.jenkins.plugins.propelo.commons.service.JenkinsConfigSCMService;
 import io.jenkins.plugins.propelo.commons.service.JobRunParserService;
 import io.jenkins.plugins.propelo.commons.service.JobSCMStorageService;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
-import io.jenkins.plugins.propelo.job_reporter.plugins.LevelOpsPluginImpl;
+import io.jenkins.plugins.propelo.job_reporter.plugins.PropeloPluginImpl;
 import io.jenkins.plugins.propelo.job_reporter.service.ConfigChangeService;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +27,7 @@ import static java.util.logging.Level.SEVERE;
 public class JobConfigContentChangeListener extends SaveableListener {
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
     private static final ObjectMapper mapper = JsonUtils.buildObjectMapper();
-    private final LevelOpsPluginImpl plugin = LevelOpsPluginImpl.getInstance();
+    private final PropeloPluginImpl plugin = PropeloPluginImpl.getInstance();
 
     /** {@inheritDoc} */
     @Override

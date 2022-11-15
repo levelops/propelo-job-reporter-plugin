@@ -4,7 +4,7 @@ import hudson.Extension;
 import hudson.model.Hudson;
 import hudson.model.ManagementLink;
 import hudson.util.Secret;
-import io.jenkins.plugins.propelo.job_reporter.plugins.LevelOpsPluginImpl;
+import io.jenkins.plugins.propelo.job_reporter.plugins.PropeloPluginImpl;
 import jenkins.model.Jenkins;
 
 import org.kohsuke.stapler.QueryParameter;
@@ -66,7 +66,7 @@ public class LevelOpsMgmtLink extends ManagementLink {
 
         Hudson.getInstance().checkPermission(Hudson.ADMINISTER);
 
-        final LevelOpsPluginImpl plugin = LevelOpsPluginImpl.getInstance();
+        final PropeloPluginImpl plugin = PropeloPluginImpl.getInstance();
         plugin.setLevelOpsApiKey(Secret.fromString(levelOpsApiKey));
         plugin.setLevelOpsPluginPath(levelOpsPluginPath);
         plugin.setJenkinsBaseUrl(Jenkins.get().getRootUrl());
@@ -81,8 +81,8 @@ public class LevelOpsMgmtLink extends ManagementLink {
         rsp.sendRedirect(res.getContextPath() + "/" + PLUGIN_NAME);
     }
 
-    public LevelOpsPluginImpl getConfiguration() {
-        return LevelOpsPluginImpl.getInstance();
+    public PropeloPluginImpl getConfiguration() {
+        return PropeloPluginImpl.getInstance();
     }
 
     public String getJenkinsStatus() {

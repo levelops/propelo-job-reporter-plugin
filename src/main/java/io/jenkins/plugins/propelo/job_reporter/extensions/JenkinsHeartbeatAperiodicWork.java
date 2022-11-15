@@ -14,7 +14,7 @@ import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService;
 import io.jenkins.plugins.propelo.commons.service.LevelOpsPluginConfigService;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
-import io.jenkins.plugins.propelo.job_reporter.plugins.LevelOpsPluginImpl;
+import io.jenkins.plugins.propelo.job_reporter.plugins.PropeloPluginImpl;
 import jenkins.model.Jenkins;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ public class JenkinsHeartbeatAperiodicWork extends AperiodicWork {
 
     private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
     private static final ObjectMapper mapper = JsonUtils.buildObjectMapper();
-    private final LevelOpsPluginImpl plugin = LevelOpsPluginImpl.getInstance();
+    private final PropeloPluginImpl plugin = PropeloPluginImpl.getInstance();
     private final LevelOpsPluginConfigService levelOpsPluginConfigService = new LevelOpsPluginConfigService();
 
     public JenkinsHeartbeatAperiodicWork() {
@@ -73,7 +73,7 @@ public class JenkinsHeartbeatAperiodicWork extends AperiodicWork {
 
     @NotNull
     public HeartbeatResponse sendHeartbeat(String hbRequestPayload, GenericRequestService genericRequestService,
-                                           LevelOpsPluginImpl plugin, final ProxyConfigService.ProxyConfig proxyConfig) throws IOException {
+                                           PropeloPluginImpl plugin, final ProxyConfigService.ProxyConfig proxyConfig) throws IOException {
         GenericResponse genericResponse = genericRequestService.performGenericRequest(plugin.getLevelOpsApiKey().getPlainText(),
                 "JenkinsHeartbeat", hbRequestPayload, plugin.isTrustAllCertificates(), null, proxyConfig);
         HeartbeatResponse heartbeatResponse = mapper.readValue(genericResponse.getPayload(),
