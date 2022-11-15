@@ -82,8 +82,9 @@
     </profiles>
 
     <properties>
-        <revision>1.0.21</revision>
-        <changelist>999999-SNAPSHOT</changelist>
+        <revision>1.0.22</revision>
+        <!-- <changelist>999999-SNAPSHOT</changelist> -->
+        <changelist></changelist>
         <product.build.sourceEncoding>UTF-8</product.build.sourceEncoding>
         <commons.validator.version>1.6</commons.validator.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
