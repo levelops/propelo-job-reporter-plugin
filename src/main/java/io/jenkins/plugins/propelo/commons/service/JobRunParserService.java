@@ -13,6 +13,8 @@ import io.jenkins.plugins.propelo.commons.models.JobRunDetail;
 import io.jenkins.plugins.propelo.commons.models.JobRunParam;
 import io.jenkins.plugins.propelo.commons.models.JobTrigger;
 import jenkins.model.Jenkins;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -236,11 +238,11 @@ public class JobRunParserService {
             case "UserIdCause":
                 Cause.UserIdCause userIdCause = (Cause.UserIdCause) cause;
                 LOGGER.finest("JobRunParserService::getUserCauseUser currentUser = " + userIdCause.getUserId());
-                return Objects.firstNonNull(userIdCause.getUserId(), ACL.ANONYMOUS_USERNAME);
+                return (String) ObjectUtils.defaultIfNull(userIdCause.getUserId(), ACL.ANONYMOUS_USERNAME);
             case "UserCause":
                 Cause.UserCause userCause = (Cause.UserCause) cause;
                 LOGGER.finest("JobRunParserService::getUserCauseUser currentUser = " + userCause.getUserName());
-                return Objects.firstNonNull(userCause.getUserName(), ACL.ANONYMOUS_USERNAME);
+                return (String) ObjectUtils.defaultIfNull(userCause.getUserName(), ACL.ANONYMOUS_USERNAME);
             default:
                 LOGGER.finest("JobRunParserService::getUserCauseUser currentUser = " + ACL.SYSTEM_USERNAME);
                 return ACL.SYSTEM_USERNAME;
@@ -310,6 +312,8 @@ public class JobRunParserService {
             case "RemoteCause":
                 triggerId = ((Cause.RemoteCause) cause).getAddr();
                 break;
+            case "GitHubPushCause":
+                LOGGER.info("GitHubPushCause, handling it as the SCMTriggerCause");
             case "SCMTriggerCause":
                 triggerId = "SCMTrigger";
                 break;
