@@ -7,7 +7,7 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>4.4</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>io.jenkins.plugins</groupId>
@@ -84,7 +84,7 @@
     <properties>
         <revision>1.0.23</revision>
         <!-- <changelist>999999-SNAPSHOT</changelist> -->
-        <changelist></changelist>
+        <changelist/>
         <product.build.sourceEncoding>UTF-8</product.build.sourceEncoding>
         <commons.validator.version>1.6</commons.validator.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
@@ -250,7 +250,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
-            <version>3.3</version>
+            <version>3.6.1</version>
         </dependency>
 
         <dependency>
