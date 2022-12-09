@@ -12,6 +12,7 @@ import io.jenkins.plugins.propelo.commons.service.JenkinsInstanceGuidService;
 import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService;
 import io.jenkins.plugins.propelo.commons.service.LevelOpsPluginConfigValidator;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
+import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService.LoadFileException;
 import io.jenkins.plugins.propelo.commons.utils.DateUtils;
 import io.jenkins.plugins.propelo.commons.utils.EnvironmentVariableNotDefinedException;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
@@ -235,9 +236,8 @@ public class PropeloPluginImpl extends Plugin {
     private void deleteOlderDirectories() {
         File currentDataDirectoryWithVersion = getDataDirectoryWithVersion();
         File expandedLevelOpsPluginDir = getExpandedLevelOpsPluginDir();
-        if (expandedLevelOpsPluginDir != null && expandedLevelOpsPluginDir.exists()
-                && currentDataDirectoryWithVersion != null) {
-            for (File file : Objects.requireNonNull(expandedLevelOpsPluginDir.listFiles())) {
+        if (expandedLevelOpsPluginDir != null && expandedLevelOpsPluginDir.exists() && currentDataDirectoryWithVersion != null) {
+            for (File file : Objects.requireNonNull(expandedLevelOpsPluginDir.listFiles(), "Unable to use the Propelo plugin directory '" + expandedLevelOpsPluginDir.getPath() + "'. Either the path doesn't refer to a firectory or the directory cannot be accessed.")) {
                 Matcher matcher = OLDER_DIRECTORIES_PATTERN.matcher(file.getName());
                 if (matcher.find() && !file.getName().equalsIgnoreCase(currentDataDirectoryWithVersion.getName())) {
                     FileUtils.deleteQuietly(file);
@@ -359,17 +359,24 @@ public class PropeloPluginImpl extends Plugin {
 
     public FormValidation doCheckLevelOpsStatus(final StaplerRequest res, final StaplerResponse rsp,
                                                 @QueryParameter("value") final String levelOpsStatus) {
-        File resultFile = JenkinsStatusService.getInstance().loadFile(instance.getExpandedLevelOpsPluginDir());
-        JenkinsStatusInfo details = JenkinsStatusService.getInstance().getStatus(resultFile);
-        if (isRegistered()) { // Instance is registered...
-            if (details.getLastFailedHeartbeat().after(details.getLastSuccessfulHeartbeat())) {
-                setJenkinsStatus("Trying to connect to LevelOps. Disconnected since " + details.getLastSuccessfulHeartbeat());
+        File resultFile = null;
+        try {
+            resultFile = JenkinsStatusService.getInstance().loadFile(instance.getExpandedLevelOpsPluginDir());
+            JenkinsStatusInfo details = JenkinsStatusService.getInstance().getStatus(resultFile);
+            if (isRegistered()) { // Instance is registered...
+                if (details.getLastFailedHeartbeat().after(details.getLastSuccessfulHeartbeat())) {
+                    setJenkinsStatus("Trying to connect to LevelOps. Disconnected since " + details.getLastSuccessfulHeartbeat());
+                } else {
+                    setJenkinsStatus("Success, connected since " + details.getLastSuccessfulHeartbeat());
+                }
+                return FormValidation.ok();
             } else {
-                setJenkinsStatus("Success, connected since " + details.getLastSuccessfulHeartbeat());
+                setJenkinsStatus("Registering Jenkins Instance....");
             }
-            return FormValidation.ok();
-        } else {
-            setJenkinsStatus("Registering Jenkins Instance....");
+        } catch (LoadFileException e) {
+            String errorMessage = "Unable to use the work directory provided in 'Propelo Plugins Directory'. The directory provided must be accessible and writeable by the user running the Jenkins process.";
+            LOGGER.log(Level.SEVERE, errorMessage, e);
+            return FormValidation.error(errorMessage);
         }
         return FormValidation.ok();
     }

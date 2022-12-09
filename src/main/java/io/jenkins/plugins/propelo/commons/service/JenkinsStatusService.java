@@ -1,20 +1,15 @@
 package io.jenkins.plugins.propelo.commons.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.jenkins.plugins.propelo.commons.models.JenkinsStatusInfo;
 import io.jenkins.plugins.propelo.commons.utils.FileUtils;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
 
 import org.jetbrains.annotations.NotNull;
-import sun.nio.cs.US_ASCII;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -36,7 +31,7 @@ public class JenkinsStatusService {
         return instance;
     }
 
-    public void markDataEvent(File expandedLevelOpsPluginDir, boolean isDataEventSuccess) {
+    public void markDataEvent(File expandedLevelOpsPluginDir, boolean isDataEventSuccess) throws LoadFileException {
         JenkinsStatusInfo instanceDetails = getStatus(new File(expandedLevelOpsPluginDir,
                 JENKINS_HEARTBEAT_INFO_FILE));
         File inputFile = loadFile(expandedLevelOpsPluginDir);
@@ -49,7 +44,7 @@ public class JenkinsStatusService {
         save(instanceDetails, inputFile);
     }
 
-    public void markHeartbeat(File expandedLevelOpsPluginDir, boolean isHeartbeatSuccess) {
+    public void markHeartbeat(File expandedLevelOpsPluginDir, boolean isHeartbeatSuccess) throws LoadFileException {
         File inputFile = loadFile(expandedLevelOpsPluginDir);
         JenkinsStatusInfo instanceDetails = getStatus(new File(expandedLevelOpsPluginDir,
                 JENKINS_HEARTBEAT_INFO_FILE));
@@ -74,15 +69,16 @@ public class JenkinsStatusService {
     }
 
     @NotNull
-    public File loadFile(File inputStatusFile) {
+    public File loadFile(File inputStatusFile) throws LoadFileException {
         File inputFile = null;
         try {
             inputFile = createFileIfNotExists(inputStatusFile);
             if (inputFile.length() == 0) {
                 mapper.writeValue(inputFile, new JenkinsStatusInfo());
             }
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "JenkinsStatusService.createFileIfNotExists Error creating expandedLevelOpsPluginDir!", e);
+        }
+        catch (IOException e){
+            throw new LoadFileException("JenkinsStatusService.createFileIfNotExists Error creating expandedLevelOpsPluginDir!", e);
         }
         return Objects.requireNonNull(inputFile);
     }
@@ -100,8 +96,22 @@ public class JenkinsStatusService {
             FileUtils.createDirectoryRecursively(expandedLevelOpsPluginDir);
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "JenkinsStatusService.createFileIfNotExists Error creating expandedLevelOpsPluginDir!", e);
+            throw e;
         }
         File file = new File(expandedLevelOpsPluginDir, JENKINS_HEARTBEAT_INFO_FILE);
         return FileUtils.createFileRecursively(file);
+    }
+
+    public static class LoadFileException extends IOException {
+        public LoadFileException() {
+        }
+
+        public LoadFileException(final String message) {
+            super(message);
+        }
+
+        public LoadFileException(final String message, final Throwable cause) {
+            super(message, cause);
+        }
     }
 }

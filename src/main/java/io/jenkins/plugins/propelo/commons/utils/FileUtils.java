@@ -21,6 +21,11 @@ public class FileUtils {
         return createFile;
     }
 
+    public static File createDirectoryRecursively(final String directoryPath) throws IOException {
+        File directory = new File(directoryPath);
+        return FileUtils.createDirectoryRecursively(directory);
+    }
+
     public static File createDirectoryRecursively(File createDir) throws IOException {
         if(createDir.exists()) {
             return createDir;
