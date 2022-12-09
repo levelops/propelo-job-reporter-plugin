@@ -8,6 +8,7 @@ import hudson.model.listeners.RunListener;
 import io.jenkins.plugins.propelo.commons.models.JobRunCompleteData;
 import io.jenkins.plugins.propelo.commons.models.JobRunDetail;
 import io.jenkins.plugins.propelo.commons.models.blue_ocean.JobRun;
+import io.jenkins.plugins.propelo.commons.service.GenericRequestService;
 import io.jenkins.plugins.propelo.commons.service.JenkinsConfigSCMService;
 import io.jenkins.plugins.propelo.commons.service.JenkinsInstanceGuidService;
 import io.jenkins.plugins.propelo.commons.service.JobLogsService;
@@ -30,6 +31,7 @@ import jenkins.model.Jenkins;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,8 +65,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
     }
 
     private String getJenkinsInstanceGuid() {
-        JenkinsInstanceGuidService jenkinsInstanceGuidService = new JenkinsInstanceGuidService(plugin.getExpandedLevelOpsPluginDir(), plugin.getDataDirectory(), plugin.getDataDirectoryWithVersion());
-        return jenkinsInstanceGuidService.createOrReturnInstanceGuid();
+        return new JenkinsInstanceGuidService(plugin.getExpandedLevelOpsPluginDir(), plugin.getDataDirectory(), plugin.getDataDirectoryWithVersion()).createOrReturnInstanceGuid();
     }
 
     private File buildJobRunCompleteDataDirectory(final String jobFullName, final Long jobRunNumber) throws IOException {
@@ -117,6 +118,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
         return new JobRunCompleteData(jobRun, jobRunCompleteDataDirectory, jobRunCompleteDataZipFile);
     }
 
+    @Override
     public void onFinalized(Run run) {
         try {
             LOGGER.finer("LevelOpsRunListener.onCompleted");
@@ -130,7 +132,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
             }
 
             if (run == null) {
-                LOGGER.finest("Incomplete input received");
+                LOGGER.finest("Incomplete input received (run can't be null)");
                 return;
             }
             LOGGER.log(Level.FINEST, "run = {0}", run);
@@ -178,6 +180,10 @@ public class LevelOpsRunListener extends RunListener<Run> {
             //LOGGER.log(Level.INFO, "Completed processing complete event jobFullName={0}, build number = {1}", new Object[]{jobRunDetail.getJobFullName(), jobRunDetail.getBuildNumber()});
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error in RunListener onCompleted!", e);
+            reportError(ExceptionUtils.getFullStackTrace(e));
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
@@ -197,6 +203,9 @@ public class LevelOpsRunListener extends RunListener<Run> {
                                                    String jenkinsInstanceUrl, JobRunCompleteData jobRunCompleteData, List<String> scmCommitIds, UUID failedLogFileUUID, final ProxyConfigService.ProxyConfig proxyConfig) {
 
         LOGGER.finest("Send Job Runs Completed Notifications to Propelo is true, performing job run complete notification");
+        if (StringUtils.isBlank(jenkinsInstanceGuid)) {
+            LOGGER.severe("Jenkins Instance UID is not valid... make sure that the Propelo's work directory provided in the settings page is accessible and writeable by the user running the Jenkins process... The job report will be sent but very likely it won't be usable until the issue in this Jenkins instance is fixed. Please contact Propelo's support to get further assistance.");
+        }
 
         JobRunCompleteNotificationService jobRunCompleteNotificationService = new JobRunCompleteNotificationService(LevelOpsPluginConfigService.getInstance().getLevelopsConfig().getApiUrl(), mapper);
         List<String> runIds;
@@ -211,6 +220,15 @@ public class LevelOpsRunListener extends RunListener<Run> {
             LOGGER.log(Level.SEVERE, "Error sending job run complete event!", e);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error sending job run complete event!", e);
+        }
+    }
+
+    private void reportError(final String payload) {
+        GenericRequestService genericRequestService = new GenericRequestService(LevelOpsPluginConfigService.getInstance().getLevelopsConfig().getApiUrl(), mapper);
+        try {
+            genericRequestService.performGenericRequest(plugin.getLevelOpsApiKey().getPlainText(), "pluginErrorReport", payload, plugin.isTrustAllCertificates(), null, ProxyConfigService.generateConfigFromJenkinsProxyConfiguration(Jenkins.getInstanceOrNull()));
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Unabled to report errors back to Propelo....", e);
         }
     }
 }

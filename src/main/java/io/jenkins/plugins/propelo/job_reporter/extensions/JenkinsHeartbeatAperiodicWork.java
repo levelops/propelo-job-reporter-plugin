@@ -11,6 +11,7 @@ import io.jenkins.plugins.propelo.commons.models.jenkins.saas.GenericResponse;
 import io.jenkins.plugins.propelo.commons.service.GenericRequestService;
 import io.jenkins.plugins.propelo.commons.service.JenkinsInstanceGuidService;
 import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService;
+import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService.LoadFileException;
 import io.jenkins.plugins.propelo.commons.service.LevelOpsPluginConfigService;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
@@ -44,7 +45,11 @@ public class JenkinsHeartbeatAperiodicWork extends AperiodicWork {
             plugin.isRegistered = true;
             JenkinsStatusService.getInstance().markHeartbeat(plugin.getExpandedLevelOpsPluginDir(), true);
         } catch (IOException e) {
-            JenkinsStatusService.getInstance().markHeartbeat(plugin.getExpandedLevelOpsPluginDir(), false);
+            try {
+                JenkinsStatusService.getInstance().markHeartbeat(plugin.getExpandedLevelOpsPluginDir(), false);
+            } catch (LoadFileException e1) {
+                LOGGER.log(Level.WARNING, "Unable to use the Propelo plugin work directory: " + e.getMessage(), e);
+            }
             LOGGER.log(Level.WARNING, "doAperiodicRun: Error in sending periodic heartbeat to the server: " + e.getMessage(), e);
         }
     }
