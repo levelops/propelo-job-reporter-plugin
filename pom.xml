@@ -146,7 +146,18 @@
             <artifactId>junit</artifactId>
             <version>1.24</version>
         </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>script-security</artifactId>
+            <version>1.50</version>
+        </dependency>
         <!-- End: plugins-->
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>groovy-sandbox</artifactId>
+            <version>1.20</version>
+        </dependency>
+
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
