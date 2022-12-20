@@ -7,7 +7,7 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>4.4</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>io.jenkins.plugins</groupId>
@@ -84,12 +84,12 @@
     <properties>
         <revision>1.0.27</revision>
         <!-- <changelist>999999-SNAPSHOT</changelist> -->
-        <changelist></changelist>
+        <changelist/>
         <product.build.sourceEncoding>UTF-8</product.build.sourceEncoding>
         <commons.validator.version>1.6</commons.validator.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
         <commons.logging.version>1.2</commons.logging.version>
-        <animal.sniffer.annotations>1.9</animal.sniffer.annotations>
+        <animal.sniffer.annotations>1.22</animal.sniffer.annotations>
         <spotbugs.version>4.7.3</spotbugs.version>
         <findbugs.skip>true</findbugs.skip>
         <spotbugs.skip>true</spotbugs.skip>
