@@ -242,7 +242,7 @@ public class PropeloPluginImpl extends Plugin {
             return true;
         }
         catch (IOException e){
-            LOGGER.log(Level.SEVERE, "Unable to use the propelo plugin directory '{0}'. Either the path doesn't refer to a directory or the directory cannot be accessed.", expandedLevelOpsPluginDir.toPath());
+            LOGGER.log(Level.SEVERE, "Unable to use the propelo plugin directory {0}. Either the path doesn't refer to a directory or the directory cannot be accessed.", expandedLevelOpsPluginDir.toPath());
         }
         finally{
             if (tmp != null) {
@@ -262,7 +262,7 @@ public class PropeloPluginImpl extends Plugin {
         try {
             Files.newDirectoryStream(expandedLevelOpsPluginDir.toPath(), (path) -> {
                 boolean use = OLDER_DIRECTORIES_PATTERN.matcher(path.getFileName().toString()).find() && !currentDataDirectoryWithVersion.getName().equalsIgnoreCase(path.getFileName().toString());
-                LOGGER.log(Level.FINEST, "Filering files... accept '{0}'? {1}", new Object[]{path, use});
+                LOGGER.log(Level.FINEST, "Filering files... accept {0}? {1}", new Object[]{path.toString(), use});
                 return use;
             }).forEach(path -> {
                 LOGGER.log(Level.FINER, "Deleting file: {0}", path);

@@ -207,7 +207,7 @@ public class LevelOpsRunListener extends RunListener<Run> {
                     LOGGER.log(Level.FINER, "Filtering files... accept {0}? {1}", new Object[]{todayDirName, use});
                     return use;
                 }).forEach(item -> {
-                    LOGGER.log(Level.FINE, "Deleting old historic report: {0}", item);
+                    LOGGER.log(Level.FINE, "Deleting old historic report: {0}", item.toString());
                     FileUtils.deleteQuietly(item.toFile());
                 });
         } catch (SecurityException | IOException e) {
