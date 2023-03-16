@@ -10,9 +10,9 @@ import io.jenkins.plugins.propelo.commons.models.blue_ocean.Organization;
 import io.jenkins.plugins.propelo.commons.service.BlueOceanRestClient;
 import io.jenkins.plugins.propelo.commons.service.JenkinsInstanceGuidService;
 import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService;
+import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService.LoadFileException;
 import io.jenkins.plugins.propelo.commons.service.LevelOpsPluginConfigValidator;
 import io.jenkins.plugins.propelo.commons.service.ProxyConfigService;
-import io.jenkins.plugins.propelo.commons.service.JenkinsStatusService.LoadFileException;
 import io.jenkins.plugins.propelo.commons.utils.DateUtils;
 import io.jenkins.plugins.propelo.commons.utils.EnvironmentVariableNotDefinedException;
 import io.jenkins.plugins.propelo.commons.utils.JsonUtils;
@@ -34,13 +34,12 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.jenkins.plugins.propelo.commons.plugins.Common.REPORTS_DIR_NAME;
@@ -80,6 +79,8 @@ public class PropeloPluginImpl extends Plugin {
             LOGGER.info("No stored configuration detected");
             migrateOldPluginConfig();
         }
+        LOGGER.info("Checking work directory permissions...");
+        checkWorkDirectoryAccess();
         LOGGER.info("Deleting Older directories during plugin initialization.Started");
         deleteOlderDirectories();
         LOGGER.info("Deleting Older directories during plugin initialization.Completed");
@@ -233,16 +234,42 @@ public class PropeloPluginImpl extends Plugin {
         return buildReportsDirectory(this.getExpandedLevelOpsPluginPath());
     }
 
+    private boolean checkWorkDirectoryAccess() {
+        File expandedLevelOpsPluginDir = getExpandedLevelOpsPluginDir();
+        File tmp = null;
+        try {
+            tmp = File.createTempFile("propelo", "access_check", expandedLevelOpsPluginDir);
+            return true;
+        }
+        catch (IOException e){
+            LOGGER.log(Level.SEVERE, "Unable to use the propelo plugin directory {0}. Either the path doesn't refer to a directory or the directory cannot be accessed.", expandedLevelOpsPluginDir.toPath());
+        }
+        finally{
+            if (tmp != null) {
+                FileUtils.deleteQuietly(tmp);
+            }
+        }
+        return false;
+    }
+
     private void deleteOlderDirectories() {
         File currentDataDirectoryWithVersion = getDataDirectoryWithVersion();
         File expandedLevelOpsPluginDir = getExpandedLevelOpsPluginDir();
-        if (expandedLevelOpsPluginDir != null && expandedLevelOpsPluginDir.exists() && currentDataDirectoryWithVersion != null) {
-            for (File file : Objects.requireNonNull(expandedLevelOpsPluginDir.listFiles(), "Unable to use the Propelo plugin directory '" + expandedLevelOpsPluginDir.getPath() + "'. Either the path doesn't refer to a firectory or the directory cannot be accessed.")) {
-                Matcher matcher = OLDER_DIRECTORIES_PATTERN.matcher(file.getName());
-                if (matcher.find() && !file.getName().equalsIgnoreCase(currentDataDirectoryWithVersion.getName())) {
-                    FileUtils.deleteQuietly(file);
-                }
-            }
+        if (expandedLevelOpsPluginDir == null || !expandedLevelOpsPluginDir.exists() || currentDataDirectoryWithVersion == null) {
+            LOGGER.log(Level.FINE, "Skipping old directories deletion: plugin_dir={0}, todays_data_directory_name={1}", new Object[]{expandedLevelOpsPluginDir, currentDataDirectoryWithVersion});
+            return;
+        }
+        try {
+            Files.newDirectoryStream(expandedLevelOpsPluginDir.toPath(), (path) -> {
+                boolean use = OLDER_DIRECTORIES_PATTERN.matcher(path.getFileName().toString()).find() && !currentDataDirectoryWithVersion.getName().equalsIgnoreCase(path.getFileName().toString());
+                LOGGER.log(Level.FINEST, "Filering files... accept {0}? {1}", new Object[]{path.toString(), use});
+                return use;
+            }).forEach(path -> {
+                LOGGER.log(Level.FINER, "Deleting file: {0}", path);
+                FileUtils.deleteQuietly(path.toFile());
+            });
+        } catch (SecurityException | IOException e) {
+            LOGGER.log(Level.SEVERE, "Unable to delete all the old directories in " + expandedLevelOpsPluginDir, e);
         }
     }
 
